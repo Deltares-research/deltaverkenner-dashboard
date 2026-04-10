@@ -17,3 +17,7 @@ platforms = ["win-64"]
 deltaverkenner_dashboard = { path = ".", editable = true }
 
 [tool.pixi.tasks]
+
+[tool.pixi.dependencies]
+pandas = ">=3.0.2,<4"
+openpyxl = ">=3.1.5,<4"
