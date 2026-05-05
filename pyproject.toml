@@ -21,3 +21,6 @@ deltaverkenner_dashboard = { path = ".", editable = true }
 [tool.pixi.dependencies]
 pandas = ">=3.0.2,<4"
 openpyxl = ">=3.1.5,<4"
+ipykernel = ">=7.2.0,<8"
+pip = ">=26.0.1,<27"
+matplotlib = ">=3.10.8,<4"
