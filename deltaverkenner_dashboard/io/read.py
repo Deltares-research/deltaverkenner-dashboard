@@ -59,8 +59,8 @@ if __name__ == "__main__":
     index_col = 0
 
     nr_of_deelregios = 21
-    # priorities = np.linspace(1, 5, 5).astype(int)
-    priorities = np.linspace(1, 4, 4).astype(int)
+    priorities = np.linspace(1, 5, 5).astype(int)
+    # priorities = np.linspace(1, 4, 4).astype(int)
     types = ["Demand", "Allocation", "Shortage"]
 
     selected_years = [1976, 2003]
@@ -78,7 +78,7 @@ if __name__ == "__main__":
 
     writer = pd.ExcelWriter(
         Path(
-            "p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/2-output/dashboard_2026.xlsx"
+            "p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/2-output/dashboard_2026_data_runs.xlsx"
         )
     )
 
@@ -100,7 +100,13 @@ if __name__ == "__main__":
 
         # replace the deelregio name with the hoofdregio name
         # selected_data.columns = selected_data.columns.str.replace(regiokoppeling)
-        selected_data.columns = selected_data.columns.map(replace_region)
+        # selected_data.columns = selected_data.columns.map(replace_region)
+        selected_data.columns = pd.Index(
+            [
+                "_".join(col.split("_")[:-1]) + "_" + regiokoppeling[col.split("_")[-1]]
+                for col in selected_data.columns
+            ]
+        )
 
         selected_data_grouped = (
             selected_data.T.groupby(by=selected_data.columns).sum().T
