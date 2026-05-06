@@ -78,7 +78,7 @@ if __name__ == "__main__":
 
     writer = pd.ExcelWriter(
         Path(
-            "p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/2-output/dashboard_2026_data_runs.xlsx"
+            "p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/2-output/dashboard_2026_data_runs_from_python.xlsx"
         )
     )
 
@@ -113,6 +113,27 @@ if __name__ == "__main__":
         )
 
         # sheet = writer.sheets[f"Run {run}"]
+
+        # add a column with national values (totals):
+        new_cols = {}
+
+        for col in selected_data_grouped.columns:
+            parts = col.split("_")
+            p = parts[0]           # p1, p2, ...
+            metric = parts[1]      # Allocation, Demand, Shortage
+
+            key = f"{p}_{metric}_total"
+
+            new_cols.setdefault(key, []).append(col)
+
+        # Create the aggregated dataframe
+        selected_data_grouped_totals = pd.DataFrame({
+            new_col: selected_data_grouped[cols].sum(axis=1)
+            for new_col, cols in new_cols.items()
+        })
+
+        # Optional: merge back into original selected_data_grouped
+        selected_data_grouped = pd.concat([selected_data_grouped, selected_data_grouped_totals], axis=1)
 
         selected_data_grouped.to_excel(writer, sheet_name=f"Run {run}")
 
