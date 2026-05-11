@@ -59,7 +59,7 @@ if __name__ == "__main__":
     index_col = 0
 
     nr_of_deelregios = 21
-    priorities = np.linspace(1, 5, 5).astype(int)
+    priorities = np.linspace(2, 5, 4).astype(int)
     # priorities = np.linspace(1, 4, 4).astype(int)
     types = ["Demand", "Allocation", "Shortage"]
 
@@ -72,6 +72,13 @@ if __name__ == "__main__":
         for t in types:
             for i in range(nr_of_deelregios):
                 column_names.append(f"p{p}_{t}_r{i+1}")
+
+    extra_takken = ["afsluitdijk", "ark", "hij", "lek", "volkerak"]
+    # hier ook even iets als column_names.append([""])
+
+    for t in types:
+        for extra in extra_takken:
+            column_names.append(f"p3_{t}_{extra}")
 
     # add the unnamed index column name to the list of column names
     column_names = ["time"] + column_names
@@ -98,15 +105,17 @@ if __name__ == "__main__":
 
         selected_data = data_year[data_year.index.month.isin(selected_months)]
 
+        # this needs to be changed to new names
         # replace the deelregio name with the hoofdregio name
         # selected_data.columns = selected_data.columns.str.replace(regiokoppeling)
-        # selected_data.columns = selected_data.columns.map(replace_region)
-        selected_data.columns = pd.Index(
-            [
-                "_".join(col.split("_")[:-1]) + "_" + regiokoppeling[col.split("_")[-1]]
-                for col in selected_data.columns
-            ]
-        )
+        # vermoedelijk staat in de regel hieronder het (algemene) AI antwoord ;)
+        selected_data.columns = selected_data.columns.map(replace_region)
+        # selected_data.columns = pd.Index(
+        #     [
+        #         "_".join(col.split("_")[:-1]) + "_" + regiokoppeling[col.split("_")[-1]]
+        #         for col in selected_data.columns
+        #     ]
+        # )
 
         selected_data_grouped = (
             selected_data.T.groupby(by=selected_data.columns).sum().T
@@ -119,22 +128,63 @@ if __name__ == "__main__":
 
         for col in selected_data_grouped.columns:
             parts = col.split("_")
-            p = parts[0]           # p1, p2, ...
-            metric = parts[1]      # Allocation, Demand, Shortage
+            p = parts[0]  # p1, p2, ...
+            metric = parts[1]  # Allocation, Demand, Shortage
 
             key = f"{p}_{metric}_total"
 
             new_cols.setdefault(key, []).append(col)
 
         # Create the aggregated dataframe
-        selected_data_grouped_totals = pd.DataFrame({
-            new_col: selected_data_grouped[cols].sum(axis=1)
-            for new_col, cols in new_cols.items()
-        })
+        selected_data_grouped_totals = pd.DataFrame(
+            {
+                new_col: selected_data_grouped[cols].sum(axis=1)
+                for new_col, cols in new_cols.items()
+            }
+        )
 
         # Optional: merge back into original selected_data_grouped
-        selected_data_grouped = pd.concat([selected_data_grouped, selected_data_grouped_totals], axis=1)
+        selected_data_grouped = pd.concat(
+            [selected_data_grouped, selected_data_grouped_totals], axis=1
+        )
 
         selected_data_grouped.to_excel(writer, sheet_name=f"Run {run}")
+
+    ######################################################################
+    # the inflow door de Rijn
+    ######################################################################
+
+    print("Working on Rijn inflow")
+
+    inflows = ["bovenrijn"]
+    # hier ook even iets als column_names.append([""])
+
+    column_names = []
+
+    for inflow in inflows:
+        column_names.append(f"P0_Inflow_{inflow}")
+
+    column_names = ["time"] + column_names
+
+    inflow_data_all = pd.DataFrame()
+
+    print("Working on inflow through Rijn")
+
+    for run in runs:
+
+        print(f"Working on run {run}")
+
+        path_to_datafile = Path(
+            f"p:/11212687-deltaverkenner2026/Zoetwater/deltaverkenner-data/data/3-results/long/{run}.csv"
+        )
+
+        data = pd.read_csv(path_to_datafile, index_col=index_col, usecols=column_names)
+
+        data.index = pd.to_datetime(data.index)
+        data.columns = [f"Run {run}"]
+
+        inflow_data_all = pd.concat([inflow_data_all, data], axis=1)
+
+    inflow_data_all.to_excel(writer, sheet_name="QRijn")
 
     writer.close()
