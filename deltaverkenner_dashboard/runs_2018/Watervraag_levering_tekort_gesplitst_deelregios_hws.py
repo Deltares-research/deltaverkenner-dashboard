@@ -62,7 +62,7 @@ config = configparser.ConfigParser()
 # config.read(
 #     r"p:/11210323-005-herijkingrisicos/data/2-interim/RegioIndeling_HL_fixed_hoofdregios.ini"
 # )
-config.read("data/runs_2018/1-input/RegioIndeling_HL_fixed_hoofdregios_2025.ini")
+config.read("data/runs_2018/1-input/RegioIndeling_HL_fixed_deelregios_2025.ini")
 
 # hier mozart districten inlezen
 mozart_districts = pd.read_csv(
@@ -149,8 +149,8 @@ for regio in regios:
 
     # mz_districts = mozart_districts[mozart_districts['Zoetwaterregio naam'] == int(regio[6:])].Districtnummer.values
     mz_districts = mozart_districts[
-        mozart_districts["Zoetwaterregio naam"]
-        == regios[regio]["regionname"][11:].replace("_", " ")
+        mozart_districts["Zoetwater deelregio naam"]
+        == regios[regio]["regionname"][10:].replace("_", " ")
     ].Districtnummer.values
     mz_districts = mz_districts.tolist()
     mz_districts_strings = [str(dist) for dist in mz_districts]
@@ -372,7 +372,7 @@ totale_tekort_beregening = (
 )  # MZ_demand_agric - MZ_alloc_agric
 
 # peilbeheer
-totale_vraag_peilbeheer = MZ_demand_WMtot + DM_netto_neerslag * -1
+totale_vraag_peilbeheer = MZ_demand_WMdw + DM_netto_neerslag * -1
 totale_tekort_peilbeheer = MZ_demand_WMdw - MZ_alloc_WMdw
 totale_levering_peilbeheer = totale_vraag_peilbeheer - totale_tekort_peilbeheer
 
@@ -414,40 +414,46 @@ totale_levering = (
     + totale_levering_beregening
 )
 
-totale_tekort_doorspoeling.to_csv(f"{loc_output}/Tekort_doorspoeling_hoofdregios.csv")
+totale_tekort_doorspoeling.to_csv(
+    f"{loc_output}/Tekort_doorspoeling_deelregios_hws.csv"
+)
 totale_tekort_doorspoeling_polders.to_csv(
-    f"{loc_output}/Tekort_doorspoeling_polders_hoofdregios.csv"
+    f"{loc_output}/Tekort_doorspoeling_polders_deelregios_hws.csv"
 )
 totale_tekort_doorspoeling_boezem.to_csv(
-    f"{loc_output}/Tekort_doorspoeling_boezem_hoofdregios.csv"
+    f"{loc_output}/Tekort_doorspoeling_boezem_deelregios_hws.csv"
 )
-totale_tekort_peilbeheer.to_csv(f"{loc_output}/Tekort_peilbeheer_hoofdregios.csv")
-totale_tekort_beregening.to_csv(f"{loc_output}/Tekort_beregening_hoofdregios.csv")
-totale_tekort.to_csv(f"{loc_output}/Tekort_totaal_hoofdregios.csv")
+totale_tekort_peilbeheer.to_csv(f"{loc_output}/Tekort_peilbeheer_deelregios_hws.csv")
+totale_tekort_beregening.to_csv(f"{loc_output}/Tekort_beregening_deelregios_hws.csv")
+totale_tekort.to_csv(f"{loc_output}/Tekort_totaal_deelregios_hws.csv")
 
-totale_vraag_doorspoeling.to_csv(f"{loc_output}/Vraag_doorspoeling_hoofdregios.csv")
+totale_vraag_doorspoeling.to_csv(f"{loc_output}/Vraag_doorspoeling_deelregios_hws.csv")
 totale_vraag_doorspoeling_polders.to_csv(
-    f"{loc_output}/Vraag_doorspoeling_polders_hoofdregios.csv"
+    f"{loc_output}/Vraag_doorspoeling_polders_deelregios_hws.csv"
 )
 totale_vraag_doorspoeling_boezem.to_csv(
-    f"{loc_output}/Vraag_doorspoeling_boezem_hoofdregios.csv"
+    f"{loc_output}/Vraag_doorspoeling_boezem_deelregios_hws.csv"
 )
-totale_vraag_peilbeheer.to_csv(f"{loc_output}/Vraag_peilbeheer_hoofdregios.csv")
-totale_vraag_beregening.to_csv(f"{loc_output}/Vraag_beregening_hoofdregios.csv")
-totale_vraag.to_csv(f"{loc_output}/Vraag_totaal_hoofdregios.csv")
+totale_vraag_peilbeheer.to_csv(f"{loc_output}/Vraag_peilbeheer_deelregios_hws.csv")
+totale_vraag_beregening.to_csv(f"{loc_output}/Vraag_beregening_deelregios_hws.csv")
+totale_vraag.to_csv(f"{loc_output}/Vraag_totaal_deelregios_hws.csv")
 
 totale_levering_doorspoeling.to_csv(
-    f"{loc_output}/Levering_doorspoeling_hoofdregios.csv"
+    f"{loc_output}/Levering_doorspoeling_deelregios_hws.csv"
 )
 totale_levering_doorspoeling_polders.to_csv(
-    f"{loc_output}/Levering_doorspoeling_polders_hoofdregios.csv"
+    f"{loc_output}/Levering_doorspoeling_polders_deelregios_hws.csv"
 )
 totale_levering_doorspoeling_boezem.to_csv(
-    f"{loc_output}/Levering_doorspoeling_boezem_hoofdregios.csv"
+    f"{loc_output}/Levering_doorspoeling_boezem_deelregios_hws.csv"
 )
-totale_levering_peilbeheer.to_csv(f"{loc_output}/Levering_peilbeheer_hoofdregios.csv")
-totale_levering_beregening.to_csv(f"{loc_output}/Levering_beregening_hoofdregios.csv")
-totale_levering.to_csv(f"{loc_output}/Levering_totaal_hoofdregios.csv")
+totale_levering_peilbeheer.to_csv(
+    f"{loc_output}/Levering_peilbeheer_deelregios_hws.csv"
+)
+totale_levering_beregening.to_csv(
+    f"{loc_output}/Levering_beregening_deelregios_hws.csv"
+)
+totale_levering.to_csv(f"{loc_output}/Levering_totaal_deelregios_hws.csv")
 
 # %%
 
