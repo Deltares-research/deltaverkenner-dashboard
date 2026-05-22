@@ -154,7 +154,7 @@ if __name__ == "__main__":
     # the inflow door de Rijn
     ######################################################################
 
-    print("Working on Rijn inflow")
+    print("Working on inflow Rijn")
 
     inflows = ["bovenrijn"]
     # hier ook even iets als column_names.append([""])
@@ -167,8 +167,6 @@ if __name__ == "__main__":
     column_names = ["time"] + column_names
 
     inflow_data_all = pd.DataFrame()
-
-    print("Working on inflow through Rijn")
 
     for run in runs:
 
@@ -186,5 +184,40 @@ if __name__ == "__main__":
         inflow_data_all = pd.concat([inflow_data_all, data], axis=1)
 
     inflow_data_all.to_excel(writer, sheet_name="QRijn")
+
+    ######################################################################
+    # the inflow door de Maas
+    ######################################################################
+
+    print("Working on inflow Maas")
+
+    inflows = ["maas"]
+    # hier ook even iets als column_names.append([""])
+
+    column_names = []
+
+    for inflow in inflows:
+        column_names.append(f"P0_Inflow_{inflow}")
+
+    column_names = ["time"] + column_names
+
+    inflow_data_all = pd.DataFrame()
+
+    for run in runs:
+
+        print(f"Working on run {run}")
+
+        path_to_datafile = Path(
+            f"p:/11212687-deltaverkenner2026/Zoetwater/deltaverkenner-data/data/3-results/long/{run}.csv"
+        )
+
+        data = pd.read_csv(path_to_datafile, index_col=index_col, usecols=column_names)
+
+        data.index = pd.to_datetime(data.index)
+        data.columns = [f"Run {run}"]
+
+        inflow_data_all = pd.concat([inflow_data_all, data], axis=1)
+
+    inflow_data_all.to_excel(writer, sheet_name="QMaas")
 
     writer.close()
