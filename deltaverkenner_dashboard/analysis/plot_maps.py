@@ -9,7 +9,7 @@ from highlight_text import ax_text
 
 from read_dashboard import read_watervraag
 
-
+# bron voor gehighlighte text: https://python-graph-gallery.com/advanced-custom-annotations-matplotlib/
 def define_path_effect(**kwargs):
     return [path_effects.Stroke(**kwargs), path_effects.Normal()]
 
