@@ -22,7 +22,7 @@ months = {
 
 
 def read_watervraag(
-    path, watervraag_type, selected_year=[2003], selected_months="Summer_half-year"
+    path, watervraag_type, selected_year=[1976], selected_months="Summer_half-year"
 ):
     index_col = 0
     nr_of_deelregios = 21
