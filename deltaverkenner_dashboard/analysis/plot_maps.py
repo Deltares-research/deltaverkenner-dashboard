@@ -21,7 +21,7 @@ my_path_effect = define_path_effect(linewidth=6, foreground="white", alpha=0.4)
 
 runs = {"BP18REF2017_slr0": "1", "BP18STOOM2050_slr0.5": "5"}
 
-run = "BP18REF2017_slr0" # "BP18STOOM2050_slr0.5" # "BP18STOOM2050_slr0.5_afvoer2018"
+run = "BP18STOOM2050_slr0.5"  # "BP18REF2017_slr0"
 
 path_to_datafile = Path(
     f"p:/11212687-deltaverkenner2026/Zoetwater/deltaverkenner-data/data/3-results/long/{runs[run]}.csv"
@@ -120,6 +120,8 @@ for watervraag_type in watervraag_types:
             #     zorder=3,
             # )
 
+            fontsize = 9
+
             if deelregio == "Rivierengebied Noord":
                 x -= 15_000
             elif deelregio == "Rivierengebied Zuid":
@@ -138,13 +140,17 @@ for watervraag_type in watervraag_types:
                 x -= 8_000
             elif deelregio == "Noord Aanvoergebied voor Gaarkeuken":
                 x -= 10_000
+            elif deelregio == "Noord Waddeneilanden":
+                y -= 18_500
+                x -= 32_000
+                fontsize = 8.5
 
             ax_text(
                 x=x,
                 y=y,
                 # s=f"<{label:.0f}>",
                 s=f"<{nummer}>",
-                fontsize=9,
+                fontsize=fontsize,
                 ax=ax,
                 highlight_textprops=[
                     {"path_effects": my_path_effect, "color": "black"}
