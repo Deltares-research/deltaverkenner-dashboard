@@ -21,7 +21,7 @@ my_path_effect = define_path_effect(linewidth=6, foreground="white", alpha=0.4)
 
 runs = {"BP18REF2017_slr0": "1", "BP18STOOM2050_slr0.5": "5"}
 
-run = "BP18STOOM2050_slr0.5"  # "BP18REF2017_slr0"
+run =  "BP18REF2017_slr0" # "BP18STOOM2050_slr0.5" 
 
 path_to_datafile = Path(
     f"p:/11212687-deltaverkenner2026/Zoetwater/deltaverkenner-data/data/3-results/long/{runs[run]}.csv"
@@ -102,7 +102,7 @@ for watervraag_type in watervraag_types:
         ax.set_xlim([xmin, xmax])
         ax.set_ylim([ymin, ymax])
 
-        xtext = -80_000
+        xtext = -100_000
         ytext = 620_000
 
         for x, y, label, deelregio, deelregio_legenda, nummer in zip(
@@ -160,7 +160,7 @@ for watervraag_type in watervraag_types:
             ax.text(
                 x=xtext,
                 y=ytext,
-                s=deelregio_legenda,
+                s=rf"{deelregio_legenda} ({label:.0f} m$^3$/s)",
                 fontsize=7,
             )
 
