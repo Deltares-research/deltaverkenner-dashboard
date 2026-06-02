@@ -6,10 +6,21 @@ import matplotlib
 import matplotlib.pyplot as plt
 import matplotlib.patheffects as path_effects
 import matplotlib as mpl
+import numpy as np
 import cmocean
 from highlight_text import ax_text
+from PIL import Image
 
 from read_dashboard import read_watervraag
+
+
+# Open an image from a computer
+def open_image_local(path_to_image):
+    image = Image.open(path_to_image)  # Open the image
+    width_px, height_px = image.size
+    aspect_ratio = width_px / height_px
+    image_array = np.array(image)  # Convert to a numpy array
+    return (width_px, height_px, aspect_ratio, image_array)  # Output)
 
 
 # bron voor gehighlighte text: https://python-graph-gallery.com/advanced-custom-annotations-matplotlib/
@@ -17,11 +28,22 @@ def define_path_effect(**kwargs):
     return [path_effects.Stroke(**kwargs), path_effects.Normal()]
 
 
+# Open the image from my computer
+width_px, height_px, aspect_ratio, image = open_image_local(
+    r"c:/Users/reusen/OneDrive - Stichting Deltares/Documents/Deltares Huisstijl/Deltares_logo_D-blauw_RGB/Deltares_logo_D-blauw_RGB/Deltares_logo_D-blauw_RGB.png"
+)
+
+# Define the position and size parameters
+image_xaxis = -0.1
+image_yaxis = 0.235
+image_width = 0.15
+image_height = image_width / aspect_ratio  # Same as width since our logo is a square
+
 my_path_effect = define_path_effect(linewidth=6, foreground="white", alpha=0.4)
 
 runs = {"BP18REF2017_slr0": "1", "BP18STOOM2050_slr0.5": "5"}
 
-run =  "BP18REF2017_slr0" # "BP18STOOM2050_slr0.5" 
+run = "BP18STOOM2050_slr0.5" # "BP18REF2017_slr0"
 
 path_to_datafile = Path(
     f"p:/11212687-deltaverkenner2026/Zoetwater/deltaverkenner-data/data/3-results/long/{runs[run]}.csv"
@@ -42,7 +64,7 @@ for watervraag_type in watervraag_types:
             selected_months=selected_month,
         )
 
-        path_to_deelregios = r"n:\Projects\11209000\11209259\F. Other information\00 Scripts en GISbestanden\Gisbestanden\ZW_regios\ZW_deelregios.shp"
+        path_to_deelregios = r"n:/Projects/11209000/11209259/F. Other information/00 Scripts en GISbestanden/Gisbestanden/ZW_regios/ZW_deelregios.shp"
         deelregios = gpd.read_file(path_to_deelregios)
 
         deelregios_with_watervraag = deelregios.merge(data, on="Nummer")
@@ -165,6 +187,13 @@ for watervraag_type in watervraag_types:
             )
 
             ytext -= 10_000
+
+        # Define the position for the image axes
+        ax_image = fig.add_axes([image_xaxis, image_yaxis, image_width, image_height])
+
+        # Display the image
+        ax_image.imshow(image)
+        ax_image.axis("off")  # Remove axis of the image
 
         ax.axis("off")
         # cbax = fig.add_axes([0.95, 0.3, 0.03, 0.39])
