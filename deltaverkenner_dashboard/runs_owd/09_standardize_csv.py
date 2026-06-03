@@ -13,8 +13,7 @@ def rename_col(col):
 
 start_time = datetime.datetime.now()
 
-filedir = Path("p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/runs_2018/3-output/")
-files = filedir.glob("*.csv")
+filedir = Path("p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/nl2120/runs_owd/3-output/")
 
 watertypes_english = {
     "Vraag": "Demand",
@@ -30,38 +29,60 @@ priorities = {
     "beregening": "p5",
 }
 
+scenarios = ["S2050owd"]
+
+jaren = {
+    "S2050owd": range(1911, 2011+1),
+}
+
 regions = {f"Region{i}": f"r{i}" for i in range(1, 22)}
 
 exclude_names = ["totaal", "doorspoeling_boezem", "doorspoeling_polders"]
 
-df = pd.DataFrame()
+for sc in scenarios:
+    print(f"Working on {sc} scenario")
 
-for file in files:
-    print(file.stem)
+    total_df = pd.DataFrame()
 
-    if not any(x in file.stem for x in exclude_names):
-        print("in if")
-        data = pd.read_csv(file, index_col=0, parse_dates=True)
-        priority = file.stem.split("_")[1]
-        watertype = file.stem.split("_")[0]
+    jaar_range = jaren[sc]
+    for jaar in jaar_range:
+        print(f"Working on {jaar} year")
 
-        data.name = file.stem.replace(
-            watertype, watertypes_english[watertype]
-        ).replace(priority, priorities[priority]).replace("_deelregios_hws", "")
+        files = filedir.glob(f"*{jaar}*.csv")
 
-        for region in regions:
-            series = data[region]
-            series.name = data.name + '_' + regions[region]
+        df = pd.DataFrame()
 
-            if df.empty:
-                df = series.to_frame()
-            else:
-                df = pd.concat([df, series], axis=1, join="inner")
+        for file in files:
+            # print(file.stem)
 
-df.columns = [rename_col(c) for c in df.columns]
+            if not any(x in file.stem for x in exclude_names):
+                # print("in if")
+                data = pd.read_csv(file, index_col=0, parse_dates=True)
+                priority = file.stem.split("_")[1]
+                watertype = file.stem.split("_")[0]
 
-output_path = Path("p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/runs_2018/4-final/output_2018_run.csv")
-df.to_csv(output_path, index_label="time")
+                data.name = file.stem.replace(
+                    watertype, watertypes_english[watertype]
+                ).replace(priority, priorities[priority]).replace(f"_S2050owd_{jaar}_deelregios_hws", "")
+
+                for region in regions:
+                    series = data[region]
+                    series.name = data.name + '_' + regions[region]
+
+                    if df.empty:
+                        df = series.to_frame()
+                    else:
+                        df = pd.concat([df, series], axis=1, join="inner")
+
+        if total_df.empty:
+            total_df = df
+        else:
+            total_df = pd.concat([total_df, df])
+
+total_df.columns = [rename_col(c) for c in total_df.columns]
+
+output_path = Path("p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/nl2120/runs_owd/4-final/output_S2050owd.csv")
+total_df.to_csv(output_path, index_label="time")
 
 end_time = datetime.datetime.now()
 

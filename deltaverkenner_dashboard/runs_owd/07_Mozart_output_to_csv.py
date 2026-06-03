@@ -63,10 +63,10 @@ for variable in variables:
         # this is to reset the index in the pandas dataframe
         combined = combined.reset_index(drop=True)
 
-        # Opslaan
-        if not os.path.exists(f"{loc_output}/{sc}/Mozart"):
-            os.makedirs(f"{loc_output}/{sc}/Mozart")
+    # Opslaan
+    if not os.path.exists(f"{loc_output}/{sc}/Mozart"):
+        os.makedirs(f"{loc_output}/{sc}/Mozart")
 
-        data.to_csv(f"{loc_output}/{sc}/Mozart/{variable}.csv", index=None)
+    combined.to_csv(f"{loc_output}/{sc}/Mozart/{variable}.csv", index=None)
 
-# print("end of script")
+print("end of script")
