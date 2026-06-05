@@ -37,7 +37,8 @@ variables = [
 ]
 
 ## PARAMETERS
-scenarios = ["S2050owd"]
+# scenarios = ["S2050owd"]
+scenarios = ["S2050"] # "REF2017"] #] #, ]
 jaren = [range(1911, 2011 + 1)]
 
 ## UITVOER

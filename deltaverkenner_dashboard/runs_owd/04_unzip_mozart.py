@@ -30,7 +30,9 @@ files_to_extract = [
     Path("Mozart/lswwaterbalans.out"),
 ]
 
-scenarios = ['S2050owd']
+# scenarios = ['S2050owd']
+scenarios = ["REF2017"] #"S2050"] #, ]
+
 
 for sc in tqdm(scenarios):
     print(f"Extracting data for scenario {sc}")
@@ -46,7 +48,10 @@ for sc in tqdm(scenarios):
     #         rf"p:\archivedprojects\11202240-kpp-dp-zoetwater\NWM_BP2018_en_historie\2018_BP2018_productieomgeving\Modelzips_Productieomgeving_NWM_Z1\{sc}BP18"
     #     )
 
-    path_zips = Path(r'p:\archivedprojects\11205271-kpp-dp-zoetwater\NWM\2020_NWM_testomgeving\Gevoeligheidsanalyse_OWD')
+    if sc in ["S2050owd"]:
+        path_zips = Path(r'p:\archivedprojects\11205271-kpp-dp-zoetwater\NWM\2020_NWM_testomgeving\Gevoeligheidsanalyse_OWD')
+    elif sc in ["REF2017", "S2050"]:
+        path_zips = Path(rf'p:\archivedprojects\11202240-kpp-dp-zoetwater\NWM_BP2018_en_historie\2018_BP2018_productieomgeving\Modelzips_Productieomgeving_NWM_Z1\{sc}BP18')
 
     for z in path_zips.iterdir():
         z_name = z.stem
@@ -59,7 +64,10 @@ for sc in tqdm(scenarios):
 
             i+=1
 
-            output_folder = extract_folder / z_name.split("_")[-1]
+            if "BP18" in z_name.split('_')[-1]:
+                output_folder = extract_folder / z_name.split("_")[-1].replace("BP18", "")
+            else:
+                output_folder = extract_folder / z_name.split("_")[-1]
 
             myzip = zipfile2.ZipFile(z, mode="r")
             files = myzip.namelist()

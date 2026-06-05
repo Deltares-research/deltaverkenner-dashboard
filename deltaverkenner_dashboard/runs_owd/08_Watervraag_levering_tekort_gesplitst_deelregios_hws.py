@@ -43,10 +43,14 @@ loc_input = "data/nl2120/runs_owd/2-interim"
 
 
 ## PARAMETERS
-scenarios = ["S2050owd"]
+# scenarios = ["S2050owd"]
+scenarios = ["REF2017"] #"S2050"] # "REF2017"] #] #, ]
+
 
 jaren = {
     "S2050owd": range(1911, 2011+1),
+    "REF2017": range(1911, 2011+1),
+    "S2050": range(1911, 2011+1),
 }
 
 ## UITVOER
@@ -452,45 +456,45 @@ for sc in scenarios:
         )
 
         totale_tekort_doorspoeling.to_csv(
-            f"{loc_output}/Tekort_doorspoeling_{sc}_{jaar}_deelregios_hws.csv"
+            f"{loc_output}/{sc}/waterbalans_per_jaar/Tekort_doorspoeling_{sc}_{jaar}_deelregios_hws.csv"
         )
         totale_tekort_doorspoeling_polders.to_csv(
-            f"{loc_output}/Tekort_doorspoeling_polders_{sc}_{jaar}_deelregios_hws.csv"
+            f"{loc_output}/{sc}/waterbalans_per_jaar/Tekort_doorspoeling_polders_{sc}_{jaar}_deelregios_hws.csv"
         )
         totale_tekort_doorspoeling_boezem.to_csv(
-            f"{loc_output}/Tekort_doorspoeling_boezem_{sc}_{jaar}_deelregios_hws.csv"
+            f"{loc_output}/{sc}/waterbalans_per_jaar/Tekort_doorspoeling_boezem_{sc}_{jaar}_deelregios_hws.csv"
         )
-        totale_tekort_peilbeheer.to_csv(f"{loc_output}/Tekort_peilbeheer_{sc}_{jaar}_deelregios_hws.csv")
-        totale_tekort_beregening.to_csv(f"{loc_output}/Tekort_beregening_{sc}_{jaar}_deelregios_hws.csv")
-        totale_tekort.to_csv(f"{loc_output}/Tekort_totaal_{sc}_{jaar}_deelregios_hws.csv")
+        totale_tekort_peilbeheer.to_csv(f"{loc_output}/{sc}/waterbalans_per_jaar/Tekort_peilbeheer_{sc}_{jaar}_deelregios_hws.csv")
+        totale_tekort_beregening.to_csv(f"{loc_output}/{sc}/waterbalans_per_jaar/Tekort_beregening_{sc}_{jaar}_deelregios_hws.csv")
+        totale_tekort.to_csv(f"{loc_output}/{sc}/waterbalans_per_jaar/Tekort_totaal_{sc}_{jaar}_deelregios_hws.csv")
 
-        totale_vraag_doorspoeling.to_csv(f"{loc_output}/Vraag_doorspoeling_{sc}_{jaar}_deelregios_hws.csv")
+        totale_vraag_doorspoeling.to_csv(f"{loc_output}/{sc}/waterbalans_per_jaar/Vraag_doorspoeling_{sc}_{jaar}_deelregios_hws.csv")
         totale_vraag_doorspoeling_polders.to_csv(
-            f"{loc_output}/Vraag_doorspoeling_polders_{sc}_{jaar}_deelregios_hws.csv"
+            f"{loc_output}/{sc}/waterbalans_per_jaar/Vraag_doorspoeling_polders_{sc}_{jaar}_deelregios_hws.csv"
         )
         totale_vraag_doorspoeling_boezem.to_csv(
-            f"{loc_output}/Vraag_doorspoeling_boezem_{sc}_{jaar}_deelregios_hws.csv"
+            f"{loc_output}/{sc}/waterbalans_per_jaar/Vraag_doorspoeling_boezem_{sc}_{jaar}_deelregios_hws.csv"
         )
-        totale_vraag_peilbeheer.to_csv(f"{loc_output}/Vraag_peilbeheer_{sc}_{jaar}_deelregios_hws.csv")
-        totale_vraag_beregening.to_csv(f"{loc_output}/Vraag_beregening_{sc}_{jaar}_deelregios_hws.csv")
-        totale_vraag.to_csv(f"{loc_output}/Vraag_totaal_{sc}_{jaar}_deelregios_hws.csv")
+        totale_vraag_peilbeheer.to_csv(f"{loc_output}/{sc}/waterbalans_per_jaar/Vraag_peilbeheer_{sc}_{jaar}_deelregios_hws.csv")
+        totale_vraag_beregening.to_csv(f"{loc_output}/{sc}/waterbalans_per_jaar/Vraag_beregening_{sc}_{jaar}_deelregios_hws.csv")
+        totale_vraag.to_csv(f"{loc_output}/{sc}/waterbalans_per_jaar/Vraag_totaal_{sc}_{jaar}_deelregios_hws.csv")
 
         totale_levering_doorspoeling.to_csv(
-            f"{loc_output}/Levering_doorspoeling_{sc}_{jaar}_deelregios_hws.csv"
+            f"{loc_output}/{sc}/waterbalans_per_jaar/Levering_doorspoeling_{sc}_{jaar}_deelregios_hws.csv"
         )
         totale_levering_doorspoeling_polders.to_csv(
-            f"{loc_output}/Levering_doorspoeling_polders_{sc}_{jaar}_deelregios_hws.csv"
+            f"{loc_output}/{sc}/waterbalans_per_jaar/Levering_doorspoeling_polders_{sc}_{jaar}_deelregios_hws.csv"
         )
         totale_levering_doorspoeling_boezem.to_csv(
-            f"{loc_output}/Levering_doorspoeling_boezem_{sc}_{jaar}_deelregios_hws.csv"
+            f"{loc_output}/{sc}/waterbalans_per_jaar/Levering_doorspoeling_boezem_{sc}_{jaar}_deelregios_hws.csv"
         )
         totale_levering_peilbeheer.to_csv(
-            f"{loc_output}/Levering_peilbeheer_{sc}_{jaar}_deelregios_hws.csv"
+            f"{loc_output}/{sc}/waterbalans_per_jaar/Levering_peilbeheer_{sc}_{jaar}_deelregios_hws.csv"
         )
         totale_levering_beregening.to_csv(
-            f"{loc_output}/Levering_beregening_{sc}_{jaar}_deelregios_hws.csv"
+            f"{loc_output}/{sc}/waterbalans_per_jaar/Levering_beregening_{sc}_{jaar}_deelregios_hws.csv"
         )
-        totale_levering.to_csv(f"{loc_output}/Levering_totaal_{sc}_{jaar}_deelregios_hws.csv")
+        totale_levering.to_csv(f"{loc_output}/{sc}/waterbalans_per_jaar/Levering_totaal_{sc}_{jaar}_deelregios_hws.csv")
 
 # %%
 
