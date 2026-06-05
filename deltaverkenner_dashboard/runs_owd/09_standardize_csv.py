@@ -22,13 +22,13 @@ watertypes_english = {
 priorities = {
     "verdamping": "p1",
     "peilbeheer": "p2",
-    "doorspoeling" : "p3",
-    "doorspoeling regionaal": "p4",
+    "doorspoeling hws" : "p3",
+    "doorspoeling": "p4",
     "beregening": "p5",
 }
 
 # scenarios = ["S2050owd"]
-scenarios = ["S2050"] # "REF2017"] #] #, ]
+scenarios = ["REF2017"] #] "S2050"# ] #] #, ]
 
 
 jaren = {
@@ -67,7 +67,7 @@ for sc in scenarios:
 
                 data.name = file.stem.replace(
                     watertype, watertypes_english[watertype]
-                ).replace(priority, priorities[priority]).replace(f"_S2050owd_{jaar}_deelregios_hws", "")
+                ).replace(priority, priorities[priority]).replace(f"_{sc}_{jaar}_deelregios_hws", "")
 
                 for region in regions:
                     series = data[region]
