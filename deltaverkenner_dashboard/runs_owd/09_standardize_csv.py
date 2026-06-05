@@ -13,8 +13,6 @@ def rename_col(col):
 
 start_time = datetime.datetime.now()
 
-filedir = Path("p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/nl2120/runs_owd/3-output/")
-
 watertypes_english = {
     "Vraag": "Demand",
     "Levering": "Allocation",
@@ -29,10 +27,14 @@ priorities = {
     "beregening": "p5",
 }
 
-scenarios = ["S2050owd"]
+# scenarios = ["S2050owd"]
+scenarios = ["S2050"] # "REF2017"] #] #, ]
+
 
 jaren = {
     "S2050owd": range(1911, 2011+1),
+    "REF2017": range(1911, 2011+1),
+    "S2050": range(1911, 2011+1),
 }
 
 regions = {f"Region{i}": f"r{i}" for i in range(1, 22)}
@@ -41,6 +43,8 @@ exclude_names = ["totaal", "doorspoeling_boezem", "doorspoeling_polders"]
 
 for sc in scenarios:
     print(f"Working on {sc} scenario")
+
+    filedir = Path(f"p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/nl2120/runs_owd/3-output/{sc}/waterbalans_per_jaar/")
 
     total_df = pd.DataFrame()
 
@@ -79,10 +83,10 @@ for sc in scenarios:
         else:
             total_df = pd.concat([total_df, df])
 
-total_df.columns = [rename_col(c) for c in total_df.columns]
+    total_df.columns = [rename_col(c) for c in total_df.columns]
 
-output_path = Path("p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/nl2120/runs_owd/4-final/output_S2050owd.csv")
-total_df.to_csv(output_path, index_label="time")
+    output_path = Path(f"p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/nl2120/runs_owd/4-final/output_{sc}.csv")
+    total_df.to_csv(output_path, index_label="time")
 
 end_time = datetime.datetime.now()
 

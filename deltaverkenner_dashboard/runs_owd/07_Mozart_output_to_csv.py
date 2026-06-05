@@ -31,8 +31,9 @@ os.chdir(r"p:/11212687-deltaverkenner2026/Zoetwater/Dashboard")
 variables = ["lswwaterbalans"]
 
 ## PARAMETERS
-scenarios = ["S2050owd"]
-jaren = [range(1911, 2011 + 1)]
+# scenarios = ["S2050owd"]
+scenarios = ["REF2017"] #"S2050"] #] #, ]
+jaren = [range(1911, 2011 + 1)] # ,range(1911, 2011 + 1)]
 
 ## UITVOER
 loc_output = "data/nl2120/runs_owd/2-interim/"
@@ -63,10 +64,10 @@ for variable in variables:
         # this is to reset the index in the pandas dataframe
         combined = combined.reset_index(drop=True)
 
-    # Opslaan
-    if not os.path.exists(f"{loc_output}/{sc}/Mozart"):
-        os.makedirs(f"{loc_output}/{sc}/Mozart")
+        # Opslaan
+        if not os.path.exists(f"{loc_output}/{sc}/Mozart"):
+            os.makedirs(f"{loc_output}/{sc}/Mozart")
 
-    combined.to_csv(f"{loc_output}/{sc}/Mozart/{variable}.csv", index=None)
+        combined.to_csv(f"{loc_output}/{sc}/Mozart/{variable}.csv", index=None)
 
 print("end of script")
