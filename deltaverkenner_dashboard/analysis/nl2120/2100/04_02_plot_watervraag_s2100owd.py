@@ -40,15 +40,18 @@ image_height = image_width / aspect_ratio  # Same as width since our logo is a s
 
 my_path_effect = define_path_effect(linewidth=6, foreground="white", alpha=0.4)
 
-run = "REF2017"
+run = "S2100"
 
 path_to_datafile = Path(
     f"p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/nl2120/runs_owd/4-final/output_{run}.csv"
 )
 
-watervraag_types = ["Totaal"]  # "Beregening"]#, "Peilbeheer", "Doorspoeling", "Totaal"]
+watervraag_types = ["Totaal"]  # ["Beregening", "Peilbeheer", "Doorspoeling", "Totaal"]
 
-selected_months = ["August"]  # , "August"]
+selected_months = ["July"]  # ["July"]#, "August"]
+
+path_to_deelregios = r"n:/Projects/11209000/11209259/F. Other information/00 Scripts en GISbestanden/Gisbestanden/ZW_regios/ZW_deelregios.shp"
+deelregios = gpd.read_file(path_to_deelregios)
 
 # bounds van Nederland
 xmin, ymin, xmax, ymax = (0.0, 300000.0, 281000.0, 625000.0)
@@ -64,10 +67,8 @@ for watervraag_type in watervraag_types:
             path_to_datafile,
             watervraag_type=watervraag_type,
             selected_months=selected_month,
+            S2100_owd=True,
         )
-
-        path_to_deelregios = r"n:/Projects/11209000/11209259/F. Other information/00 Scripts en GISbestanden/Gisbestanden/ZW_regios/ZW_deelregios.shp"
-        deelregios = gpd.read_file(path_to_deelregios)
 
         deelregios_with_watervraag = deelregios.merge(data, on="Nummer")
 
@@ -76,10 +77,6 @@ for watervraag_type in watervraag_types:
         )
         deelregios_with_watervraag = deelregios_with_watervraag.sort_values(
             by=["Nummer"]
-        )
-
-        deelregios_with_watervraag["Watervraag gecorrigeerd"] = (
-            0.81 * deelregios_with_watervraag["Watervraag"]
         )
 
         if watervraag_type in ["Beregening", "Doorspoeling", "Peilbeheer"]:
@@ -100,11 +97,15 @@ for watervraag_type in watervraag_types:
             left=False,
         )
 
-        ax.set_title("Waterbeschikbaarheid in 2050", fontsize=14, loc="right")
+        ax.set_title(
+            f"{run}owd - watervraag, {watervraag_type.lower()}",
+            fontsize=14,
+            loc="right",
+        )
 
         deelregios_with_watervraag.plot(
             ax=ax,
-            column="Watervraag gecorrigeerd",
+            column="Watervraag",
             zorder=2,
             cmap=cmap,
             norm=norm,
@@ -123,7 +124,7 @@ for watervraag_type in watervraag_types:
         for x, y, label, deelregio, deelregio_legenda, nummer in zip(
             deelregios_with_watervraag.centroid.x,
             deelregios_with_watervraag.centroid.y,
-            deelregios_with_watervraag["Watervraag gecorrigeerd"],
+            deelregios_with_watervraag["Watervraag"],
             deelregios_with_watervraag["Naam"],
             deelregios_with_watervraag["deelregio"],
             deelregios_with_watervraag["Nummer"],
@@ -179,14 +180,28 @@ for watervraag_type in watervraag_types:
 
         # Display the image
         ax_image.imshow(image)
-        ax_image.axis("off")  # Remove axis of the image
+
+        # Remove axis of the image
+        ax_image.axis("off")
 
         ax.axis("off")
 
         figpath = Path(
-            f"p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/nl2120/figuren/waterbeschikbaarheid_2050_deelregios_{selected_month}_1976.png"
+            f"p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/nl2120/figuren/2100/Figuren Dimmie/04_{run}owd_watervraag_{watervraag_type.lower()}_deelregios_{selected_month}_1976.png"
         )
 
         plt.savefig(figpath, bbox_inches="tight", dpi=300)
 
         plt.close()
+
+        deelregios_with_watervraag = deelregios_with_watervraag.drop(
+            columns=["geometry"]
+        )
+
+        deelregios_with_watervraag = deelregios_with_watervraag.rename(
+            columns={"Watervraag": "Watervraag (m3/s)"}
+        )
+
+        outputpath = f"p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/nl2120/figuren/2100/csv's Dimmie/04_{run}owd_watervraag_{watervraag_type.lower()}_deelregios_{selected_month}_1976.csv"
+
+        deelregios_with_watervraag.to_csv(outputpath, index=False)
