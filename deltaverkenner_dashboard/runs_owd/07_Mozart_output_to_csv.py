@@ -32,8 +32,8 @@ variables = ["lswwaterbalans"]
 
 ## PARAMETERS
 # scenarios = ["S2050owd"]
-scenarios = ["REF2017"] #"S2050"] #] #, ]
-jaren = [range(1911, 2011 + 1)] # ,range(1911, 2011 + 1)]
+scenarios = ["S2100"] #"S2050"] #] #, ]
+jaren = [range(1972, 2003+1)] # [range(1911, 2011 + 1)] # ,range(1911, 2011 + 1)]
 
 ## UITVOER
 loc_output = "data/nl2120/runs_owd/2-interim/"

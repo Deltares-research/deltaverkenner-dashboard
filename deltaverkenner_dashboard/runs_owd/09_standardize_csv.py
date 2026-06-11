@@ -28,13 +28,14 @@ priorities = {
 }
 
 # scenarios = ["S2050owd"]
-scenarios = ["REF2017"] #] "S2050"# ] #] #, ]
+scenarios = ["S2100"] #] "S2050"# ] #] #, ]
 
 
 jaren = {
     "S2050owd": range(1911, 2011+1),
     "REF2017": range(1911, 2011+1),
     "S2050": range(1911, 2011+1),
+    "S2100": range(1972, 2003+1)
 }
 
 regions = {f"Region{i}": f"r{i}" for i in range(1, 22)}
