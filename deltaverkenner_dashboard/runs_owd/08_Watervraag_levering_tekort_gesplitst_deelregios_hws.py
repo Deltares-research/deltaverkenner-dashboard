@@ -44,13 +44,14 @@ loc_input = "data/nl2120/runs_owd/2-interim"
 
 ## PARAMETERS
 # scenarios = ["S2050owd"]
-scenarios = ["REF2017"] #"S2050"] # "REF2017"] #] #, ]
+scenarios = ["S2100"] #"S2050"] # "REF2017"] #] #, ]
 
 
 jaren = {
     "S2050owd": range(1911, 2011+1),
     "REF2017": range(1911, 2011+1),
     "S2050": range(1911, 2011+1),
+    "S2100": range(1972, 2003+1)
 }
 
 ## UITVOER

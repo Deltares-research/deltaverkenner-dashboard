@@ -37,7 +37,7 @@ files_to_extract = [
 ]
 
 # scenarios = ['S2050owd']
-scenarios = ["S2050"] #"REF2017", ]
+scenarios = ["S2085"] #"REF2017", ]
 
 # jaren = {
 #     "REF2017": range(1912, 2012+1),
@@ -60,7 +60,7 @@ for sc in tqdm(scenarios):
 
     if sc in ["S2050owd"]:
         path_zips = Path(r'p:\archivedprojects\11205271-kpp-dp-zoetwater\NWM\2020_NWM_testomgeving\Gevoeligheidsanalyse_OWD')
-    elif sc in ["REF2017", "S2050"]:
+    elif sc in ["REF2017", "S2050", "S2085"]:
         path_zips = Path(rf'p:\archivedprojects\11202240-kpp-dp-zoetwater\NWM_BP2018_en_historie\2018_BP2018_productieomgeving\Modelzips_Productieomgeving_NWM_Z1\{sc}BP18')
 
     for z in path_zips.iterdir():
@@ -73,6 +73,9 @@ for sc in tqdm(scenarios):
             print(f"Folder {z_name} contains LHM data")
 
             i+=1
+
+            if '2085' in str(z_name):
+                z_name = z_name.replace("2085", "2100")
 
             if "BP18" in z_name.split('_')[-1]:
                 output_folder = extract_folder / z_name.split("_")[-1].replace("BP18", "")
