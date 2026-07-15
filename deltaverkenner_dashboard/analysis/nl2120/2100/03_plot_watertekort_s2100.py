@@ -92,7 +92,7 @@ for watervraag_type in watervraag_types:
 
             if run in ["REF2017"]:
                 deelregios_with_watervraag["Watervraag gecorrigeerd"] = (
-                    0.81 * deelregios_with_watervraag["Watervraag"]
+                    (1-0.27) * deelregios_with_watervraag["Watervraag"]
                 )
 
             data_dict[run] = deelregios_with_watervraag
