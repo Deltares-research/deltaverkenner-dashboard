@@ -22,7 +22,11 @@ months = {
 
 
 def read_watervraag(
-    path, watervraag_type, selected_year=[1976], selected_months="Summer_half-year"
+    path,
+    watervraag_type,
+    selected_year=[1976],
+    selected_months="Summer_half-year",
+    S2100_owd=False,
 ):
     index_col = 0
     nr_of_deelregios = 21
@@ -32,6 +36,69 @@ def read_watervraag(
     for t in watervraag_types[watervraag_type]:
         for i in range(nr_of_deelregios):
             column_names.append(f"{t}_Demand_r{i+1}")
+
+    # add the unnamed index column name to the list of column names
+    column_names = ["time"] + column_names
+
+    data = pd.read_csv(path, index_col=index_col, usecols=column_names)
+
+    data.index = pd.to_datetime(data.index)
+
+    data_year = data[data.index.year.isin(selected_year)]
+
+    selected_data = data_year[data_year.index.month.isin(months[selected_months])]
+
+    # average over the time
+    selected_data_averages = selected_data.mean(axis=0)
+
+    selected_data_averages = selected_data_averages.to_frame()
+    selected_data_averages.columns = ["Watervraag"]
+
+    selected_data_averages["Nummer"] = (
+        selected_data_averages.index.str.split("_").str[-1].str.lstrip("r")
+    )  # .astype(int)
+
+    if S2100_owd:
+        if any(selected_data_averages.index.str.contains("p2")):
+            factors = pd.read_csv(
+                r"p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/nl2120/figuren/2100/toename_watervraag_peilbeheer_S2050_S2050owd.csv",
+                index_col="Nummer",
+            )[
+                "Factor difference in watervraag peilbeheer between S2050 and S2050owd"
+            ].values
+
+            selected_data_averages.loc[
+                selected_data_averages.index.str.contains("p2"), "Watervraag"
+            ] *= factors
+    # if any(selected_data_averages.index.str.contains("p2")):
+
+    if watervraag_type == "Totaal":
+        # Extract the shared part (Demand_rX)
+        group_key = selected_data_averages.index.str.split("_", n=1).str[1]
+
+        # Group and sum
+        result = selected_data_averages.groupby(group_key)["Watervraag"].sum()
+        result = result.to_frame()
+        result["Nummer"] = (
+            result.index.str.split("_").str[-1].str.lstrip("r")
+        )  # .astype(int)
+        return result
+
+    else:
+        return selected_data_averages
+
+
+def read_watertekort(
+    path, watervraag_type, selected_year=[1976], selected_months="Summer_half-year"
+):
+    index_col = 0
+    nr_of_deelregios = 21
+
+    column_names = []
+
+    for t in watervraag_types[watervraag_type]:
+        for i in range(nr_of_deelregios):
+            column_names.append(f"{t}_Shortage_r{i+1}")
 
     # add the unnamed index column name to the list of column names
     column_names = ["time"] + column_names
