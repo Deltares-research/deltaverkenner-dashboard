@@ -77,7 +77,7 @@ config.read(
 
 # hier mozart districten inlezen
 mozart_districts = pd.read_csv(
-    r"p:/11211541-005-dpzw-pragmaanpak/waterbalances/data/2-interim/koppeltabel_districten_(deel)regios_2025.csv"
+    r"p:/archivedprojects/11211541-005-dpzw-pragmaanpak/waterbalances/data/2-interim/koppeltabel_districten_(deel)regios_2025.csv"
 )
 # mozart_districts = pd.read_csv(
     # "data/runs_2018/1-input/koppeltabel_districten_(deel)regios_2025.csv"
