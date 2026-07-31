@@ -49,29 +49,75 @@ veengebieden = gpd.read_file(path_veengebieden_shapes)
 # intersection between the polygons
 ################################################################
 
-district_points = districts.copy()
-district_points["geometry"] = district_points.geometry.representative_point()
+districtnrs_in_veengebieden = {
+    "1": [508, 503, 507, 502, 504, 505, 4, 5, 144, 6, 607],
+    "2": [13],
+    "3.1": [105, 106, 15],
+    "3.2": [282],
+    "3.3": [401, 402, 403, 404],
+    "4": [361, 351, 353, 341, 352, 821],
+    "5": [
+        954,
+        980,
+        979,
+        981,
+        371,
+        391,
+        810,
+        971,
+        392,
+        395,
+        396,
+        394,
+        393,
+        43,
+        969,
+        968,
+        967,
+        972,
+        955,
+        956,
+        42,
+        957,
+        970,
+        984,
+        974,
+    ],
+    "6": [
+        53,
+        55,
+        44,
+        42,
+        43,
+        45,
+        965,
+        463,
+        464,
+        462,
+        461,
+        471,
+        472,
+        959,
+        983,
+        961,
+        962,
+        213,
+        966,
+        475,
+        92,
+        963,
+        964,
+        84,
+    ],
+}
 
+districtnrs_in_veengebieden_list = [
+    value for values in districtnrs_in_veengebieden.values() for value in values
+]
 
-centroid_overlap = gpd.sjoin(
-    district_points, veengebieden, predicate="within", how="inner"
-)
-
-districts_in_veen = districts[districts["DWRN"].isin(centroid_overlap["DWRN"])]
-
-
-# intersection = gpd.overlay(districts, veengebieden, keep_geom_type=False)
-
-# intersection["overlap_area"] = intersection.area
-
-
-# district_area = districts.set_index("DWRN").area
-
-# intersection["pct_district"] = (
-#     intersection["overlap_area"] / intersection["DWRN"].map(district_area) * 100
-# )
-
-# districts_in_veengebieden = districts[districts["DWRN"].isin(intersection.drop_duplicates(subset="DWRN")["DWRN"])]
+districts_in_veengebied = districts[
+    districts["DWRN"].isin(districtnrs_in_veengebieden_list)
+]
 
 print("Done!")
 
@@ -92,21 +138,9 @@ ax.tick_params(
     left=False,
 )
 
-
-# districts.boundary.plot(ax=ax, lw=0.3, color="grey")
-
-
-# districts.plot(ax=ax, color="orange")
-# centroid_overlap.plot(ax=ax, markersize=5, facecolor="green", edgecolor="black")
-
 districts.plot(ax=ax, facecolor="lightblue", edgecolor="grey", linewidth=0.3)
 
-# intersection.plot(ax=ax)
-districts_in_veen.plot(ax=ax, facecolor="green", edgecolor="grey", linewidth=0.3)
-district_points.plot(
-    ax=ax, markersize=5, facecolor="lightblue", edgecolor="black", linewidth=0.3
-)
-centroid_overlap.plot(ax=ax, markersize=5, facecolor="green", edgecolor="black")
+districts_in_veengebied.plot(ax=ax, facecolor="green")
 
 veengebieden.plot(ax=ax, facecolor="orange", alpha=0.5)
 
