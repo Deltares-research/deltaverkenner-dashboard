@@ -51,6 +51,12 @@ path_dm_nodes = Path(
 
 nodes = gpd.read_file(path_dm_nodes)
 
+# path_all_dm_nodes = Path(
+#     "p:/11212687-deltaverkenner2026/Zoetwater/Basisbestanden/LSWs-Districten/DM_nodes.shp"
+# )
+
+# nodes = gpd.read_file(path_all_dm_nodes)
+
 #################################################################
 # veengebieden shapes
 #################################################################
@@ -67,9 +73,36 @@ veengebieden = gpd.read_file(path_veengebieden_shapes)
 # district_points["geometry"] = district_points.geometry.representative_point()
 
 
-# centroid_overlap = gpd.sjoin(
-#     district_points, veengebieden, predicate="within", how="inner"
-# )
+centroid_overlap = gpd.sjoin(
+    nodes, veengebieden, predicate="within", how="inner"
+)
+
+selected_dm_nodes = centroid_overlap[["naam", "ID", "geometry"]]
+
+with open(
+    "p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/nl2120/veengebieden/dm_knopen_in_veengebieden.txt",
+    "w",
+    encoding="utf-8",
+) as f:
+
+    for region_nr, (region, group) in enumerate(
+        selected_dm_nodes.groupby("naam"),
+        start=1,
+    ):
+        f.writelines(
+            [
+                f"[Region{region_nr}]\n",
+                f"RegionName={region}\n",
+                f"NrSelectedDMNodeIds={len(group)}\n",
+            ]
+        )
+
+        f.writelines(
+            f"DMNodeId{i}={node_id}\n"
+            for i, node_id in enumerate(group["ID"], start=1)
+        )
+
+        f.write("\n")
 
 # districts_in_veen = districts[districts["DWRN"].isin(centroid_overlap["DWRN"])]
 
@@ -106,7 +139,9 @@ ax.tick_params(
     left=False,
 )
 
-nodes.plot(ax=ax, markersize=5)
+nodes[~nodes["ID"].isin(centroid_overlap["ID"])].plot(ax=ax, markersize=5, color="blue")
+
+centroid_overlap.plot(ax=ax, markersize=10, color="pink")
 
 # # districts.boundary.plot(ax=ax, lw=0.3, color="grey")
 
@@ -142,7 +177,7 @@ ax_image.axis("off")  # Remove axis of the image
 ax.axis("off")
 
 figpath = Path(
-    "p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/nl2120/figuren/shapes_veengebieden/dm_knopen_in_veengebieden.png"
+    "p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/nl2120/figuren/shapes_veengebieden/dm_knopen_in_veengebieden_26-08-07.png"
 )
 
 plt.savefig(figpath, bbox_inches="tight", dpi=300)

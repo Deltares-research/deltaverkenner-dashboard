@@ -50,64 +50,51 @@ veengebieden = gpd.read_file(path_veengebieden_shapes)
 ################################################################
 
 districtnrs_in_veengebieden = {
-    "1": [508, 503, 507, 502, 504, 505, 4, 5, 144, 6, 607],
-    "2": [13],
-    "3.1": [105, 106, 15],
-    "3.2": [282],
-    "3.3": [401, 402, 403, 404],
-    "4": [361, 351, 353, 341, 352, 821],
-    "5": [
+    "1. Friesland-Groningen": [502, 503, 508, 5],
+    "2. Wieden-Weerribben": [],
+    "3.1 Veluwe/Utrechtse Heuvelrug": [105],
+    "3.2 Veluwe/Utrechtse Heuvelrug": [],
+    "3.3 Veluwe/Utrechtse heuvelrug": [401, 402, 403],
+    "4. Noord-Holland": [361, 353],
+    "5. Randstad-Groene Hart": [
         954,
-        980,
-        979,
-        981,
-        371,
         391,
         810,
+        955,
         971,
         392,
-        395,
-        396,
         394,
+        396,
+        956,
+        395,
+        957,
         393,
-        43,
         969,
         968,
         967,
-        972,
-        955,
-        956,
-        42,
-        957,
         970,
+        972,
+        981,
+        371,
+        980,
         984,
-        974,
     ],
-    "6": [
+    "6. Rivierengebied": [
         53,
-        55,
-        44,
-        42,
-        43,
         45,
-        965,
+        92,
         463,
-        464,
         462,
-        461,
-        471,
-        472,
         959,
+        963,
+        962,
         983,
         961,
-        962,
-        213,
         966,
-        475,
-        92,
-        963,
+        213,
+        965,
+        44,
         964,
-        84,
     ],
 }
 
@@ -159,7 +146,7 @@ ax_image.axis("off")  # Remove axis of the image
 ax.axis("off")
 
 figpath = Path(
-    "p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/nl2120/figuren/shapes_veengebieden/mz_districts_in_veengebieden_26-07-31.png"
+    "p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/nl2120/figuren/shapes_veengebieden/mz_districts_in_veengebieden_26-08-05.png"
 )
 
 plt.savefig(figpath, bbox_inches="tight", dpi=300)
