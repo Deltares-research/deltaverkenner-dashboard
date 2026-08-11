@@ -1,5 +1,6 @@
 from pathlib import Path
 
+import pandas as pd
 import geopandas as gpd
 import matplotlib.pyplot as plt
 import numpy as np
@@ -334,6 +335,21 @@ lsw_in_veengebieden_shapes = lsw_in_veengebieden_shapes[
 # # lsw_in_veengebieden.to_csv(
 # #     "p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/nl2120/veengebieden/lsws_in_veengebieden.csv"
 # # )
+
+#########
+# merge the selected districts and lsw's, and write to a shapefile
+#########
+
+merged_gdf = gpd.GeoDataFrame(
+    pd.concat([lsw_in_veengebieden_shapes, districts_in_veengebied], ignore_index=True),
+    crs=lsw_in_veengebieden.crs,
+)
+
+merged_gdf.to_file(
+    "p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/nl2120/veengebieden/selected_lsws_and_districts/selected_lsws_and_districts.shp",
+    driver="ESRI Shapefile"
+)
+
 print("Done!")
 
 #########
