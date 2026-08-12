@@ -28,7 +28,7 @@ priorities = {
 }
 
 # scenarios = ["S2050owd"]
-scenarios = ["REF2017", "S2050", "S2050owd"] # ["S2100"] #] "S2050"# ] #] #, ]
+scenarios = ["S2100"] #] ["REF2017", "S2050", "S2050owd"] "S2050"# ] #] #, ]
 
 
 jaren = {
@@ -68,7 +68,7 @@ for sc in scenarios:
 
                 data.name = file.stem.replace(
                     watertype, watertypes_english[watertype]
-                ).replace(priority, priorities[priority]).replace(f"_{sc}_{jaar}_deelregios_hws", "")
+                ).replace(priority, priorities[priority]).replace(f"_{sc}_{jaar}_veengebieden_hws", "")
 
                 for region in regions:
                     series = data[region]
