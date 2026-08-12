@@ -27,9 +27,14 @@ def read_watervraag(
     selected_year=[1976],
     selected_months="Summer_half-year",
     S2100_owd=False,
+    veengebieden=False,
 ):
     index_col = 0
-    nr_of_deelregios = 21
+
+    if veengebieden:
+        nr_of_deelregios = 8
+    else:
+        nr_of_deelregios = 21
 
     column_names = []
 
@@ -61,7 +66,7 @@ def read_watervraag(
     if S2100_owd:
         if any(selected_data_averages.index.str.contains("p2")):
             factors = pd.read_csv(
-                r"p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/nl2120/figuren/2100/toename_watervraag_peilbeheer_S2050_S2050owd.csv",
+                r"p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/nl2120/figuren/shapes_veengebieden/2100/04_01_toename_watervraag_peilbeheer_S2050_S2050owd.csv",
                 index_col="Nummer",
             )[
                 "Factor difference in watervraag peilbeheer between S2050 and S2050owd"
@@ -89,10 +94,19 @@ def read_watervraag(
 
 
 def read_watertekort(
-    path, watervraag_type, selected_year=[1976], selected_months="Summer_half-year"
+    path,
+    watervraag_type,
+    selected_year=[1976],
+    selected_months="Summer_half-year",
+    S2100_owd=False,
+    veengebieden=False,
 ):
     index_col = 0
-    nr_of_deelregios = 21
+
+    if veengebieden:
+        nr_of_deelregios = 8
+    else:
+        nr_of_deelregios = 21
 
     column_names = []
 
@@ -120,6 +134,17 @@ def read_watertekort(
     selected_data_averages["Nummer"] = (
         selected_data_averages.index.str.split("_").str[-1].str.lstrip("r")
     )  # .astype(int)
+
+    if S2100_owd:
+        if any(selected_data_averages.index.str.contains("p2")):
+            factors = pd.read_csv(
+                r"p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/nl2120/figuren/shapes_veengebieden/2100/05_01_toename_watertekort_peilbeheer_S2050_S2050owd.csv",
+                index_col="Nummer",
+            )["Difference in watertekort peilbeheer between S2050 and S2050owd"].values
+
+            selected_data_averages.loc[
+                selected_data_averages.index.str.contains("p2"), "Watervraag"
+            ] += factors
 
     if watervraag_type == "Totaal":
         # Extract the shared part (Demand_rX)

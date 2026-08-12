@@ -38,9 +38,20 @@ image_yaxis = 0.235
 image_width = 0.15
 image_height = image_width / aspect_ratio  # Same as width since our logo is a square
 
-#################################################################
-# provinces (for plot)
-#################################################################
+my_path_effect = define_path_effect(linewidth=6, foreground="white", alpha=0.4)
+
+run = "S2100"
+
+path_to_datafile = Path(
+    f"p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/nl2120/runs_veengebieden/4-final/output_{run}.csv"
+)
+
+watervraag_types = ["Beregening", "Peilbeheer", "Doorspoeling", "Totaal"]
+
+selected_months = ["July"]  # ["July"]#, "August"]
+
+path_to_deelregios = r"n:/Projects/11209000/11209259/F. Other information/00 Scripts en GISbestanden/Gisbestanden/ZW_regios/ZW_deelregios.shp"
+deelregios = gpd.read_file(path_to_deelregios)
 
 path_to_provinces_shapefile = "p:/11207812-somers-ontwikkeling/1-data/1-external/Bestuurlijke_grenzen/provincial_boundaries_2025.shp"
 provinces = gpd.read_file(path_to_provinces_shapefile)
@@ -53,51 +64,12 @@ path_veengebieden_shapes = "p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/d
 
 veengebieden = gpd.read_file(path_veengebieden_shapes)
 
-veengebieden = veengebieden.rename(columns={"naam": "deelgebied"})
+veengebieden = veengebieden.sort_values(by="naam").reset_index(drop=True)
 
-#################################################################
+veengebieden["Nummer"] = veengebieden.index + 1
 
-mapping = pd.DataFrame(
-    {
-        "deelgebied": [
-            "1. Friesland-Groningen",
-            "1. Friesland-Groningen",
-            "1. Friesland-Groningen",
-            "1. Friesland-Groningen",
-            "2. Wieden-Weerribben",
-            "3.1 Veluwe/Utrechtse heuvelrug",
-            "3.1 Veluwe/Utrechtse heuvelrug",
-            "3.1 Veluwe/Utrechtse heuvelrug",
-            "3.2 Veluwe/Utrechtse heuvelrug",
-            "3.3 Veluwe/Utrechtse heuvelrug",
-            "4. Noord-Holland",
-            "5. Randstad-Groene Hart",
-            "5. Randstad-Groene Hart",
-            "6. Rivierengebied",
-            "6. Rivierengebied",
-            "6. Rivierengebied",
-        ],
-        "deelregio": [12, 7, 8, 9, 2, 1, 2, 3, 1, 18, 10, 17, 18, 14, 17, 18],
-        "pct": [8, 16, 66, 10, 99, 18, 48, 33, 97, 100, 94, 50, 50, 34, 38, 28],
-    }
-)
-
-mapping["pct"] /= 100
-
-my_path_effect = define_path_effect(linewidth=6, foreground="white", alpha=0.4)
-
-run = "S2100"
-
-path_to_datafile = Path(
-    f"p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/nl2120/runs_owd/4-final/output_{run}.csv"
-)
-
-watervraag_types = ["Totaal"]  # ["Beregening", "Peilbeheer", "Doorspoeling", "Totaal"]
-
-selected_months = ["July"]  # ["July"]#, "August"]
-
-path_to_deelregios = r"n:/Projects/11209000/11209259/F. Other information/00 Scripts en GISbestanden/Gisbestanden/ZW_regios/ZW_deelregios.shp"
-deelregios = gpd.read_file(path_to_deelregios)
+veengebieden["Nummer"] = veengebieden["Nummer"].astype(str)
+#######################################
 
 # bounds van Nederland
 xmin, ymin, xmax, ymax = (0.0, 300000.0, 281000.0, 625000.0)
@@ -114,38 +86,17 @@ for watervraag_type in watervraag_types:
             watervraag_type=watervraag_type,
             selected_months=selected_month,
             S2100_owd=True,
+            veengebieden=True,
         )
 
-        data = data.rename(columns={"Nummer": "deelregio"})
+        deelregios_with_watervraag = veengebieden.merge(data, on="Nummer")
 
-        data["deelregio"] = pd.to_numeric(data["deelregio"])
-
-        result_veengebieden = data.merge(mapping, on="deelregio")
-
-        result_veengebieden["watervraag_deelgebied"] = (
-            result_veengebieden["Watervraag"] * result_veengebieden["pct"]
+        deelregios_with_watervraag["Nummer"] = pd.to_numeric(
+            deelregios_with_watervraag["Nummer"]
         )
-
-        veengebieden_with_watervraag = veengebieden.merge(
-            result_veengebieden, on="deelgebied"
+        deelregios_with_watervraag = deelregios_with_watervraag.sort_values(
+            by=["Nummer"]
         )
-
-        deelgebied_gdf = veengebieden_with_watervraag.groupby(
-            "deelgebied", as_index=False
-        ).agg({"watervraag_deelgebied": "sum", "geometry": "first", "id_num": "first"})
-
-        deelgebied_gdf = gpd.GeoDataFrame(
-            deelgebied_gdf, geometry="geometry", crs=veengebieden_with_watervraag.crs
-        )
-
-        # deelregios_with_watervraag = deelregios.merge(data, on="Nummer")
-
-        # deelregios_with_watervraag["Nummer"] = pd.to_numeric(
-        #     deelregios_with_watervraag["Nummer"]
-        # )
-        # deelregios_with_watervraag = deelregios_with_watervraag.sort_values(
-        #     by=["Nummer"]
-        # )
 
         if watervraag_type in ["Beregening", "Doorspoeling", "Peilbeheer"]:
             bounds = [0, 10, 20, 30, 40, 50]
@@ -171,9 +122,9 @@ for watervraag_type in watervraag_types:
             loc="right",
         )
 
-        deelgebied_gdf.plot(
+        deelregios_with_watervraag.plot(
             ax=ax,
-            column="watervraag_deelgebied",
+            column="Watervraag",
             zorder=2,
             cmap=cmap,
             norm=norm,
@@ -181,8 +132,9 @@ for watervraag_type in watervraag_types:
             legend_kwds={"shrink": 0.65, "label": r"m$^{3}$/s"},
         )
 
-        deelgebied_gdf.boundary.plot(ax=ax, lw=0.5, color="black")
-        provinces.boundary.plot(ax=ax, lw=0.4, color="grey")
+        deelregios_with_watervraag.boundary.plot(ax=ax, lw=0.5, color="black")
+
+        provinces.boundary.plot(ax=ax, lw=0.5, color="grey")
 
         ax.set_xlim([xmin, xmax])
         ax.set_ylim([ymin, ymax])
@@ -191,11 +143,11 @@ for watervraag_type in watervraag_types:
         ytext = 620_000
 
         for x, y, label, deelgebied, nummer in zip(
-            deelgebied_gdf.representative_point().x,
-            deelgebied_gdf.representative_point().y,
-            deelgebied_gdf["watervraag_deelgebied"],
-            deelgebied_gdf["deelgebied"],
-            deelgebied_gdf["id_num"],
+            deelregios_with_watervraag.representative_point().x,
+            deelregios_with_watervraag.representative_point().y,
+            deelregios_with_watervraag["Watervraag"],
+            deelregios_with_watervraag["naam"],
+            deelregios_with_watervraag["id_num"],
         ):
 
             fontsize = 9
@@ -242,19 +194,21 @@ for watervraag_type in watervraag_types:
         ax.axis("off")
 
         figpath = Path(
-            f"p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/nl2120/figuren/shapes_veengebieden/2100/Figuren Dimmie/04_{run}owd_watervraag_{watervraag_type.lower()}_deelregios_{selected_month}_1976.png"
+            f"p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/nl2120/figuren/shapes_veengebieden/2100/Figuren Dimmie/04_{run}owd_watervraag_{watervraag_type.lower()}_veengebieden_{selected_month}_1976.png"
         )
 
         plt.savefig(figpath, bbox_inches="tight", dpi=300)
 
         plt.close()
 
-        deelgebied_gdf = deelgebied_gdf.drop(columns=["geometry", "id_num"])
-
-        deelgebied_gdf = deelgebied_gdf.rename(
-            columns={"watervraag_deelgebied": "Watervraag (m3/s)"}
+        deelregios_with_watervraag = deelregios_with_watervraag.drop(
+            columns=["geometry", "area_deelg", "area_m2"]
         )
 
-        outputpath = f"p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/nl2120/figuren/shapes_veengebieden/2100/csv's Dimmie/04_{run}owd_watervraag_{watervraag_type.lower()}_deelregios_{selected_month}_1976.csv"
+        deelregios_with_watervraag = deelregios_with_watervraag.rename(
+            columns={"Watervraag": "Watervraag (m3/s)"}
+        )
 
-        deelgebied_gdf.to_csv(outputpath, index=False)
+        outputpath = f"p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/nl2120/figuren/shapes_veengebieden/2100/csv's Dimmie/04_{run}owd_watervraag_{watervraag_type.lower()}_veengebieden_{selected_month}_1976.csv"
+
+        deelregios_with_watervraag.to_csv(outputpath, index=False)
