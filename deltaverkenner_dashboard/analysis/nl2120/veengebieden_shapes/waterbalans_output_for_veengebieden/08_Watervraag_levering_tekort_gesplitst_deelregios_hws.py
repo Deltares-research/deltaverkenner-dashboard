@@ -44,7 +44,7 @@ loc_input = "data/nl2120/runs_owd/2-interim"
 
 ## PARAMETERS
 # scenarios = ["S2050owd"]
-scenarios = ["S2100"] #"S2050"] # "REF2017"] #] #, ]
+scenarios = ["REF2017", "S2050", "S2050owd"] # ["S2100"] #"S2050"] # "REF2017"] #] #, ]
 
 
 jaren = {
@@ -56,7 +56,7 @@ jaren = {
 
 ## UITVOER
 # loc_output = Path(r"p:/11211541-005-dpzw-pragmaanpak/waterbalances/data/3-input")
-loc_output = "data/nl2120/runs_owd/3-output"
+loc_output = "data/nl2120/runs_veengebieden/3-output"
 
 ##-------------------------------------------
 ## 2. FUNCTIES
@@ -70,8 +70,11 @@ loc_output = "data/nl2120/runs_owd/3-output"
 
 # CONFIGURATION INI FILE
 config = configparser.ConfigParser()
+# config.read(
+#     r"p:\11212687-deltaverkenner2026\Zoetwater\Dashboard\data\runs_2018\1-input\RegioIndeling_HL_fixed_deelregios_2025.ini"
+# )
 config.read(
-    r"p:\11212687-deltaverkenner2026\Zoetwater\Dashboard\data\runs_2018\1-input\RegioIndeling_HL_fixed_deelregios_2025.ini"
+    "p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/nl2120/veengebieden/RegioIndeling_veengebieden.ini"
 )
 # config.read("data/runs_2018/1-input/RegioIndeling_HL_fixed_deelregios_2025.ini")
 
@@ -157,32 +160,41 @@ for sc in scenarios:
         globals()[regio + "_link"] = [
             v for k, v in regios[regio].items() if ("dmlink" in k) & ("dmlinkids" not in k)
         ]
-        # globals()[regio + "_district"] = [
-        #     v for k, v in regios[regio].items() if ("mzdistrict" in k)
-        # ]  # hier kan overruled worden met info uit district
+        globals()[regio + "_district"] = [
+            v for k, v in regios[regio].items() if ("mzdistrict" in k)
+        ]  # hier kan overruled worden met info uit district
 
         # hier mozart districten toevoegen
 
-        # mz_districts = mozart_districts[mozart_districts['Zoetwaterregio naam'] == int(regio[6:])].Districtnummer.values
-        mz_districts = mozart_districts[
-            mozart_districts["Zoetwater deelregio naam"]
-            == regios[regio]["regionname"][10:].replace("_", " ")
-        ].Districtnummer.values
-        mz_districts = mz_districts.tolist()
-        mz_districts_strings = [str(dist) for dist in mz_districts]
+        # # mz_districts = mozart_districts[mozart_districts['Zoetwaterregio naam'] == int(regio[6:])].Districtnummer.values
+        # mz_districts = mozart_districts[
+        #     mozart_districts["Zoetwater deelregio naam"]
+        #     == regios[regio]["regionname"][10:].replace("_", " ")
+        # ].Districtnummer.values
+        # mz_districts = mz_districts.tolist()
+        # mz_districts_strings = [str(dist) for dist in mz_districts]
 
-        globals()[regio + "_district"] = mz_districts_strings
+        # globals()[regio + "_district"] = mz_districts_strings
+
+        # hier komen de lsw's
+    
+        globals()[regio + "_lsw"] = [
+            v for k, v in regios[regio].items() if ("lswid" in k) & ("nrlsws" not in k)
+        ]  # hier kan overruled worden met info uit district
 
     ## Check of alle nodes, links en districten wel bestaan
     nodes_all = list(set(sum([globals()[r + "_node"] for r in regios], [])))
     links_all = list(set(sum([globals()[r + "_link"] for r in regios], [])))
     dists_all = list(set(sum([globals()[r + "_district"] for r in regios], [])))
+    lsws_all = list(set(sum([globals()[r + "_lsw"] for r in regios], [])))
     nodes_dm = list(vraag_peilbeheer.columns)
     links_dm = list(vraag_doorspoeling.columns)
     dists_mz = [str(i) for i in list(set(list(MozartFile["DW"])))]
+    lsws_mz = [str(i) for i in list(set(list(MozartFile["LSWNR"])))]
     missing_nodes = list(set(nodes_all) - set(nodes_dm))
     missing_links = list(set(links_all) - set(links_dm))
     missing_dists = list(set(dists_all) - set(dists_mz))
+    missing_lsws = list(set(lsws_all) - set(lsws_mz))
 
     ## En verwijder deze uit de lijstjes als die niet bestaat
     for regio in regios:
@@ -198,6 +210,10 @@ for sc in scenarios:
         for i in missing_dists:
             if i in globals()[regio + "_district"]:
                 globals()[regio + "_district"].remove(i)
+
+        for i in missing_lsws:
+            if i in globals()[regio + "_lsw"]:
+                globals()[regio + "_lsw"].remove(i)
 
     ################################
     ## WATERVRAGEN EN TEKORTEN DM ##
@@ -339,7 +355,89 @@ for sc in scenarios:
         # hier kan de Mozart selectie geplaatst worden op LSW niveau.
         ####
 
+        MZ_demand_flush_lsw2 = pd.pivot_table(
+            MozartFile_jaar,
+            index=["TIMESTART"],
+            columns=["LSWNR"],
+            values="DEM_FLUSH",
+            aggfunc="sum",
+        )
+        MZ_demand_flush_lsw2.columns = MZ_demand_flush_lsw2.columns.map(str)
+        MZ_demand_WMtot_lsw2 = pd.pivot_table(
+            MozartFile_jaar,
+            index=["TIMESTART"],
+            columns=["LSWNR"],
+            values="DEM_WMTOTAL",
+            aggfunc="sum",
+        )
+        MZ_demand_WMtot_lsw2.columns = MZ_demand_WMtot_lsw2.columns.map(str)
+        MZ_demand_WMdw_lsw2 = pd.pivot_table(
+            MozartFile_jaar,
+            index=["TIMESTART"],
+            columns=["LSWNR"],
+            values="DEM_WM_TODW",
+            aggfunc="sum",
+        )
+        MZ_demand_WMdw_lsw2.columns = MZ_demand_WMdw_lsw2.columns.map(str)
+        MZ_demand_agric_lsw2 = pd.pivot_table(
+            MozartFile_jaar,
+            index=["TIMESTART"],
+            columns=["LSWNR"],
+            values="DEM_AGRIC",
+            aggfunc="sum",
+        )
+        MZ_demand_agric_lsw2.columns = MZ_demand_agric_lsw2.columns.map(str)
+
+        MZ_alloc_flush_lsw2 = pd.pivot_table(
+            MozartFile_jaar,
+            index=["TIMESTART"],
+            columns=["LSWNR"],
+            values="ALLOC_FLUSH",
+            aggfunc="sum",
+        )
+        MZ_alloc_flush_lsw2.columns = MZ_alloc_flush_lsw2.columns.map(str)
+        MZ_alloc_WMdw_lsw2 = pd.pivot_table(
+            MozartFile_jaar,
+            index=["TIMESTART"],
+            columns=["LSWNR"],
+            values="ALLOC_WM_DW",
+            aggfunc="sum",
+        )
+        MZ_alloc_WMdw_lsw2.columns = MZ_alloc_WMdw_lsw2.columns.map(str)
+        MZ_alloc_agric_lsw2 = pd.pivot_table(
+            MozartFile_jaar,
+            index=["TIMESTART"],
+            columns=["LSWNR"],
+            values="ALLOC_AGRIC",
+            aggfunc="sum",
+        )
+        MZ_alloc_agric_lsw2.columns = MZ_alloc_agric_lsw2.columns.map(str)   
+
+        ## En omzetten naar pandas dataframe
+        MZ_demand_flush_lsw = pd.DataFrame(index=np.unique(MozartFile_jaar.TIMESTART), columns=regios)
+        MZ_demand_WMtot_lsw = pd.DataFrame(index=np.unique(MozartFile_jaar.TIMESTART), columns=regios)
+        MZ_demand_WMdw_lsw = pd.DataFrame(index=np.unique(MozartFile_jaar.TIMESTART), columns=regios)
+        MZ_demand_agric_lsw = pd.DataFrame(index=np.unique(MozartFile_jaar.TIMESTART), columns=regios)
+        MZ_alloc_flush_lsw = pd.DataFrame(index=np.unique(MozartFile_jaar.TIMESTART), columns=regios)
+        MZ_alloc_WMdw_lsw = pd.DataFrame(index=np.unique(MozartFile_jaar.TIMESTART), columns=regios)
+        MZ_alloc_agric_lsw = pd.DataFrame(index=np.unique(MozartFile_jaar.TIMESTART), columns=regios)
+
         # iets van: mozartfile_jaar[mozartfile_jaar["LSWNR"].isin(selection of LSWNR)]
+        ## Groeperen per regio
+        for regio in regios:
+            MZ_demand_flush_lsw[regio] = MZ_demand_flush_lsw2[globals()[regio + "_lsw"]].sum(
+                axis=1
+            )
+            MZ_demand_WMtot_lsw[regio] = MZ_demand_WMtot_lsw2[globals()[regio + "_lsw"]].sum(
+                axis=1
+            )
+            MZ_demand_WMdw_lsw[regio] = MZ_demand_WMdw_lsw2[globals()[regio + "_lsw"]].sum(axis=1)
+            MZ_demand_agric_lsw[regio] = MZ_demand_agric_lsw2[globals()[regio + "_lsw"]].sum(
+                axis=1
+            )
+            MZ_alloc_flush_lsw[regio] = MZ_alloc_flush_lsw2[globals()[regio + "_lsw"]].sum(axis=1)
+            MZ_alloc_WMdw_lsw[regio] = MZ_alloc_WMdw_lsw2[globals()[regio + "_lsw"]].sum(axis=1)
+            MZ_alloc_agric_lsw[regio] = MZ_alloc_agric_lsw2[globals()[regio + "_lsw"]].sum(axis=1)
 
         # selecteer jaar in DM dataframe
         DM_tekort_doorspoel_jaar = DM_tekort_doorspoel[
@@ -408,6 +506,38 @@ for sc in scenarios:
         MZ_demand_agric = MZ_demand_agric.T / dt_in_seconds_floats
         MZ_demand_agric = MZ_demand_agric.T
 
+        # divide mozart values by the time difference in seconds to
+        # convert from m3/decade to m3/s
+        MZ_alloc_flush_lsw = MZ_alloc_flush_lsw.T / dt_in_seconds_floats
+        MZ_alloc_flush_lsw = MZ_alloc_flush_lsw.T
+
+        MZ_demand_flush_lsw = MZ_demand_flush_lsw.T / dt_in_seconds_floats
+        MZ_demand_flush_lsw = MZ_demand_flush_lsw.T
+
+        MZ_demand_WMtot_lsw = MZ_demand_WMtot_lsw.T / dt_in_seconds_floats
+        MZ_demand_WMtot_lsw = MZ_demand_WMtot_lsw.T
+
+        MZ_alloc_WMdw_lsw = MZ_alloc_WMdw_lsw.T / dt_in_seconds_floats
+        MZ_alloc_WMdw_lsw = MZ_alloc_WMdw_lsw.T
+
+        MZ_demand_WMdw_lsw = MZ_demand_WMdw_lsw.T / dt_in_seconds_floats
+        MZ_demand_WMdw_lsw = MZ_demand_WMdw_lsw.T
+
+        MZ_alloc_agric_lsw = MZ_alloc_agric_lsw.T / dt_in_seconds_floats
+        MZ_alloc_agric_lsw = MZ_alloc_agric_lsw.T
+
+        MZ_demand_agric_lsw = MZ_demand_agric_lsw.T / dt_in_seconds_floats
+        MZ_demand_agric_lsw = MZ_demand_agric_lsw.T
+
+        # voeg de waardes van de mozart districten samen met de waardes van de lsw's
+        MZ_alloc_flush = MZ_alloc_flush.add(MZ_alloc_flush_lsw, fill_value=0)
+        MZ_demand_flush = MZ_demand_flush.add(MZ_demand_flush_lsw, fill_value=0)
+        MZ_demand_WMtot = MZ_demand_WMtot.add(MZ_demand_WMtot_lsw, fill_value=0)
+        MZ_alloc_WMdw = MZ_alloc_WMdw.add(MZ_alloc_WMdw_lsw, fill_value=0)
+        MZ_demand_WMdw = MZ_demand_WMdw.add(MZ_demand_WMdw_lsw, fill_value=0)
+        MZ_alloc_agric = MZ_alloc_agric.add(MZ_alloc_agric_lsw, fill_value=0)
+        MZ_demand_agric = MZ_demand_agric.add(MZ_demand_agric_lsw, fill_value=0)
+
         # totale_waardes = pd.DataFrame()
 
         # totale waardes per categorie
@@ -463,45 +593,45 @@ for sc in scenarios:
         )
 
         totale_tekort_doorspoeling.to_csv(
-            f"{loc_output}/{sc}/waterbalans_per_jaar/Tekort_doorspoeling_{sc}_{jaar}_deelregios_hws.csv"
+            f"{loc_output}/{sc}/waterbalans_per_jaar/Tekort_doorspoeling_{sc}_{jaar}_veengebieden_hws.csv"
         )
         totale_tekort_doorspoeling_polders.to_csv(
-            f"{loc_output}/{sc}/waterbalans_per_jaar/Tekort_doorspoeling_polders_{sc}_{jaar}_deelregios_hws.csv"
+            f"{loc_output}/{sc}/waterbalans_per_jaar/Tekort_doorspoeling_polders_{sc}_{jaar}_veengebieden_hws.csv"
         )
         totale_tekort_doorspoeling_boezem.to_csv(
-            f"{loc_output}/{sc}/waterbalans_per_jaar/Tekort_doorspoeling_boezem_{sc}_{jaar}_deelregios_hws.csv"
+            f"{loc_output}/{sc}/waterbalans_per_jaar/Tekort_doorspoeling_boezem_{sc}_{jaar}_veengebieden_hws.csv"
         )
-        totale_tekort_peilbeheer.to_csv(f"{loc_output}/{sc}/waterbalans_per_jaar/Tekort_peilbeheer_{sc}_{jaar}_deelregios_hws.csv")
-        totale_tekort_beregening.to_csv(f"{loc_output}/{sc}/waterbalans_per_jaar/Tekort_beregening_{sc}_{jaar}_deelregios_hws.csv")
-        totale_tekort.to_csv(f"{loc_output}/{sc}/waterbalans_per_jaar/Tekort_totaal_{sc}_{jaar}_deelregios_hws.csv")
+        totale_tekort_peilbeheer.to_csv(f"{loc_output}/{sc}/waterbalans_per_jaar/Tekort_peilbeheer_{sc}_{jaar}_veengebieden_hws.csv")
+        totale_tekort_beregening.to_csv(f"{loc_output}/{sc}/waterbalans_per_jaar/Tekort_beregening_{sc}_{jaar}_veengebieden_hws.csv")
+        totale_tekort.to_csv(f"{loc_output}/{sc}/waterbalans_per_jaar/Tekort_totaal_{sc}_{jaar}_veengebieden_hws.csv")
 
-        totale_vraag_doorspoeling.to_csv(f"{loc_output}/{sc}/waterbalans_per_jaar/Vraag_doorspoeling_{sc}_{jaar}_deelregios_hws.csv")
+        totale_vraag_doorspoeling.to_csv(f"{loc_output}/{sc}/waterbalans_per_jaar/Vraag_doorspoeling_{sc}_{jaar}_veengebieden_hws.csv")
         totale_vraag_doorspoeling_polders.to_csv(
-            f"{loc_output}/{sc}/waterbalans_per_jaar/Vraag_doorspoeling_polders_{sc}_{jaar}_deelregios_hws.csv"
+            f"{loc_output}/{sc}/waterbalans_per_jaar/Vraag_doorspoeling_polders_{sc}_{jaar}_veengebieden_hws.csv"
         )
         totale_vraag_doorspoeling_boezem.to_csv(
-            f"{loc_output}/{sc}/waterbalans_per_jaar/Vraag_doorspoeling_boezem_{sc}_{jaar}_deelregios_hws.csv"
+            f"{loc_output}/{sc}/waterbalans_per_jaar/Vraag_doorspoeling_boezem_{sc}_{jaar}_veengebieden_hws.csv"
         )
-        totale_vraag_peilbeheer.to_csv(f"{loc_output}/{sc}/waterbalans_per_jaar/Vraag_peilbeheer_{sc}_{jaar}_deelregios_hws.csv")
-        totale_vraag_beregening.to_csv(f"{loc_output}/{sc}/waterbalans_per_jaar/Vraag_beregening_{sc}_{jaar}_deelregios_hws.csv")
-        totale_vraag.to_csv(f"{loc_output}/{sc}/waterbalans_per_jaar/Vraag_totaal_{sc}_{jaar}_deelregios_hws.csv")
+        totale_vraag_peilbeheer.to_csv(f"{loc_output}/{sc}/waterbalans_per_jaar/Vraag_peilbeheer_{sc}_{jaar}_veengebieden_hws.csv")
+        totale_vraag_beregening.to_csv(f"{loc_output}/{sc}/waterbalans_per_jaar/Vraag_beregening_{sc}_{jaar}_veengebieden_hws.csv")
+        totale_vraag.to_csv(f"{loc_output}/{sc}/waterbalans_per_jaar/Vraag_totaal_{sc}_{jaar}_veengebieden_hws.csv")
 
         totale_levering_doorspoeling.to_csv(
-            f"{loc_output}/{sc}/waterbalans_per_jaar/Levering_doorspoeling_{sc}_{jaar}_deelregios_hws.csv"
+            f"{loc_output}/{sc}/waterbalans_per_jaar/Levering_doorspoeling_{sc}_{jaar}_veengebieden_hws.csv"
         )
         totale_levering_doorspoeling_polders.to_csv(
-            f"{loc_output}/{sc}/waterbalans_per_jaar/Levering_doorspoeling_polders_{sc}_{jaar}_deelregios_hws.csv"
+            f"{loc_output}/{sc}/waterbalans_per_jaar/Levering_doorspoeling_polders_{sc}_{jaar}_veengebieden_hws.csv"
         )
         totale_levering_doorspoeling_boezem.to_csv(
-            f"{loc_output}/{sc}/waterbalans_per_jaar/Levering_doorspoeling_boezem_{sc}_{jaar}_deelregios_hws.csv"
+            f"{loc_output}/{sc}/waterbalans_per_jaar/Levering_doorspoeling_boezem_{sc}_{jaar}_veengebieden_hws.csv"
         )
         totale_levering_peilbeheer.to_csv(
-            f"{loc_output}/{sc}/waterbalans_per_jaar/Levering_peilbeheer_{sc}_{jaar}_deelregios_hws.csv"
+            f"{loc_output}/{sc}/waterbalans_per_jaar/Levering_peilbeheer_{sc}_{jaar}_veengebieden_hws.csv"
         )
         totale_levering_beregening.to_csv(
-            f"{loc_output}/{sc}/waterbalans_per_jaar/Levering_beregening_{sc}_{jaar}_deelregios_hws.csv"
+            f"{loc_output}/{sc}/waterbalans_per_jaar/Levering_beregening_{sc}_{jaar}_veengebieden_hws.csv"
         )
-        totale_levering.to_csv(f"{loc_output}/{sc}/waterbalans_per_jaar/Levering_totaal_{sc}_{jaar}_deelregios_hws.csv")
+        totale_levering.to_csv(f"{loc_output}/{sc}/waterbalans_per_jaar/Levering_totaal_{sc}_{jaar}_veengebieden_hws.csv")
 
 # %%
 

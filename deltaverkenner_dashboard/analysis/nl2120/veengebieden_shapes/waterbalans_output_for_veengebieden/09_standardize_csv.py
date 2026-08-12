@@ -28,7 +28,7 @@ priorities = {
 }
 
 # scenarios = ["S2050owd"]
-scenarios = ["S2100"] #] "S2050"# ] #] #, ]
+scenarios = ["REF2017", "S2050", "S2050owd"] # ["S2100"] #] "S2050"# ] #] #, ]
 
 
 jaren = {
@@ -38,14 +38,14 @@ jaren = {
     "S2100": range(1972, 2003+1)
 }
 
-regions = {f"Region{i}": f"r{i}" for i in range(1, 22)}
+regions = {f"Region{i}": f"r{i}" for i in range(1, 9)}
 
 exclude_names = ["totaal", "doorspoeling_boezem", "doorspoeling_polders"]
 
 for sc in scenarios:
     print(f"Working on {sc} scenario")
 
-    filedir = Path(f"p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/nl2120/runs_owd/3-output/{sc}/waterbalans_per_jaar/")
+    filedir = Path(f"p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/nl2120/runs_veengebieden/3-output/{sc}/waterbalans_per_jaar/")
 
     total_df = pd.DataFrame()
 
@@ -86,7 +86,7 @@ for sc in scenarios:
 
     total_df.columns = [rename_col(c) for c in total_df.columns]
 
-    output_path = Path(f"p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/nl2120/runs_owd/4-final/output_{sc}.csv")
+    output_path = Path(f"p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/nl2120/runs_veengebieden/4-final/output_{sc}.csv")
     total_df.to_csv(output_path, index_label="time")
 
 end_time = datetime.datetime.now()
