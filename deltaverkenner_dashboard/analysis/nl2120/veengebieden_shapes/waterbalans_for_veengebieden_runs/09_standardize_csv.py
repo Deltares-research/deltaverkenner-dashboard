@@ -28,7 +28,7 @@ priorities = {
 }
 
 # scenarios = ["S2050owd"]
-scenarios = ["S2100"] #] ["REF2017", "S2050", "S2050owd"] "S2050"# ] #] #, ]
+scenarios = ["REF2017", "S2050", "S2050owd", "S2100"] # "S2050"# ] #] #, ]
 
 
 jaren = {

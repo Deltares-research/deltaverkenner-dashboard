@@ -44,7 +44,7 @@ loc_input = "data/nl2120/runs_owd/2-interim"
 
 ## PARAMETERS
 # scenarios = ["S2050owd"]
-scenarios = ["REF2017", "S2050", "S2050owd"] # ["S2100"] #"S2050"] # "REF2017"] #] #, ]
+scenarios = ["S2100"] # "REF2017", "S2050", "S2050owd", ["S2100"] #"S2050"] # "REF2017"] #] #, ]
 
 
 jaren = {
@@ -74,7 +74,7 @@ config = configparser.ConfigParser()
 #     r"p:\11212687-deltaverkenner2026\Zoetwater\Dashboard\data\runs_2018\1-input\RegioIndeling_HL_fixed_deelregios_2025.ini"
 # )
 config.read(
-    "p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/nl2120/veengebieden/RegioIndeling_veengebieden.ini"
+    "p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/nl2120/veengebieden/RegioIndeling_veengebieden_v2.ini"
 )
 # config.read("data/runs_2018/1-input/RegioIndeling_HL_fixed_deelregios_2025.ini")
 
