@@ -44,14 +44,14 @@ loc_input = "data/nl2120/runs_owd/2-interim"
 
 ## PARAMETERS
 # scenarios = ["S2050owd"]
-scenarios = ["S2100"]  # "S2050"] # "REF2017"] #] #, ]
+scenarios = ["S2100"] #"S2050"] # "REF2017"] #] #, ]
 
 
 jaren = {
-    "S2050owd": range(1911, 2011 + 1),
-    "REF2017": range(1911, 2011 + 1),
-    "S2050": range(1911, 2011 + 1),
-    "S2100": range(1972, 2003 + 1),
+    "S2050owd": range(1911, 2011+1),
+    "REF2017": range(1911, 2011+1),
+    "S2050": range(1911, 2011+1),
+    "S2100": range(1972, 2003+1)
 }
 
 ## UITVOER
@@ -80,7 +80,7 @@ mozart_districts = pd.read_csv(
     r"p:/archivedprojects/11211541-005-dpzw-pragmaanpak/waterbalances/data/2-interim/koppeltabel_districten_(deel)regios_2025.csv"
 )
 # mozart_districts = pd.read_csv(
-# "data/runs_2018/1-input/koppeltabel_districten_(deel)regios_2025.csv"
+    # "data/runs_2018/1-input/koppeltabel_districten_(deel)regios_2025.csv"
 # )
 
 # %%
@@ -155,9 +155,7 @@ for sc in scenarios:
             if (("dmnode" in k) & ("dmnodeids" not in k))
         ]
         globals()[regio + "_link"] = [
-            v
-            for k, v in regios[regio].items()
-            if ("dmlink" in k) & ("dmlinkids" not in k)
+            v for k, v in regios[regio].items() if ("dmlink" in k) & ("dmlinkids" not in k)
         ]
         # globals()[regio + "_district"] = [
         #     v for k, v in regios[regio].items() if ("mzdistrict" in k)
@@ -216,9 +214,9 @@ for sc in scenarios:
     DM_netto_neerslag = pd.DataFrame(columns=regios)
 
     for regio in regios:
-        DM_tekort_doorspoel[regio] = tekort_doorspoeling[
-            globals()[regio + "_link"]
-        ].sum(axis=1)
+        DM_tekort_doorspoel[regio] = tekort_doorspoeling[globals()[regio + "_link"]].sum(
+            axis=1
+        )
 
         DM_tekort_peilbeheer[regio] = tekort_peilbeheer[globals()[regio + "_node"]].sum(
             axis=1
@@ -237,9 +235,7 @@ for sc in scenarios:
         DM_vraag_onttrekking_DIW[regio] = vraag_onttrekking_DIW[
             globals()[regio + "_node"]
         ].sum(axis=1)
-        DM_netto_neerslag[regio] = netto_neerslag[globals()[regio + "_node"]].sum(
-            axis=1
-        )
+        DM_netto_neerslag[regio] = netto_neerslag[globals()[regio + "_node"]].sum(axis=1)
     ####################################
     ## WATERVRAGEN EN TEKORTEN MOZART ##
     ####################################
@@ -315,51 +311,29 @@ for sc in scenarios:
         MZ_alloc_agric2.columns = MZ_alloc_agric2.columns.map(str)
 
         ## En omzetten naar pandas dataframe
-        MZ_demand_flush = pd.DataFrame(
-            index=np.unique(MozartFile_jaar.TIMESTART), columns=regios
-        )
-        MZ_demand_WMtot = pd.DataFrame(
-            index=np.unique(MozartFile_jaar.TIMESTART), columns=regios
-        )
-        MZ_demand_WMdw = pd.DataFrame(
-            index=np.unique(MozartFile_jaar.TIMESTART), columns=regios
-        )
-        MZ_demand_agric = pd.DataFrame(
-            index=np.unique(MozartFile_jaar.TIMESTART), columns=regios
-        )
-        MZ_alloc_flush = pd.DataFrame(
-            index=np.unique(MozartFile_jaar.TIMESTART), columns=regios
-        )
-        MZ_alloc_WMdw = pd.DataFrame(
-            index=np.unique(MozartFile_jaar.TIMESTART), columns=regios
-        )
-        MZ_alloc_agric = pd.DataFrame(
-            index=np.unique(MozartFile_jaar.TIMESTART), columns=regios
-        )
+        MZ_demand_flush = pd.DataFrame(index=np.unique(MozartFile_jaar.TIMESTART), columns=regios)
+        MZ_demand_WMtot = pd.DataFrame(index=np.unique(MozartFile_jaar.TIMESTART), columns=regios)
+        MZ_demand_WMdw = pd.DataFrame(index=np.unique(MozartFile_jaar.TIMESTART), columns=regios)
+        MZ_demand_agric = pd.DataFrame(index=np.unique(MozartFile_jaar.TIMESTART), columns=regios)
+        MZ_alloc_flush = pd.DataFrame(index=np.unique(MozartFile_jaar.TIMESTART), columns=regios)
+        MZ_alloc_WMdw = pd.DataFrame(index=np.unique(MozartFile_jaar.TIMESTART), columns=regios)
+        MZ_alloc_agric = pd.DataFrame(index=np.unique(MozartFile_jaar.TIMESTART), columns=regios)
 
         ## Groeperen per regio
         for regio in regios:
-            MZ_demand_flush[regio] = MZ_demand_flush2[
-                globals()[regio + "_district"]
-            ].sum(axis=1)
-            MZ_demand_WMtot[regio] = MZ_demand_WMtot2[
-                globals()[regio + "_district"]
-            ].sum(axis=1)
-            MZ_demand_WMdw[regio] = MZ_demand_WMdw2[globals()[regio + "_district"]].sum(
+            MZ_demand_flush[regio] = MZ_demand_flush2[globals()[regio + "_district"]].sum(
                 axis=1
             )
-            MZ_demand_agric[regio] = MZ_demand_agric2[
-                globals()[regio + "_district"]
-            ].sum(axis=1)
-            MZ_alloc_flush[regio] = MZ_alloc_flush2[globals()[regio + "_district"]].sum(
+            MZ_demand_WMtot[regio] = MZ_demand_WMtot2[globals()[regio + "_district"]].sum(
                 axis=1
             )
-            MZ_alloc_WMdw[regio] = MZ_alloc_WMdw2[globals()[regio + "_district"]].sum(
+            MZ_demand_WMdw[regio] = MZ_demand_WMdw2[globals()[regio + "_district"]].sum(axis=1)
+            MZ_demand_agric[regio] = MZ_demand_agric2[globals()[regio + "_district"]].sum(
                 axis=1
             )
-            MZ_alloc_agric[regio] = MZ_alloc_agric2[globals()[regio + "_district"]].sum(
-                axis=1
-            )
+            MZ_alloc_flush[regio] = MZ_alloc_flush2[globals()[regio + "_district"]].sum(axis=1)
+            MZ_alloc_WMdw[regio] = MZ_alloc_WMdw2[globals()[regio + "_district"]].sum(axis=1)
+            MZ_alloc_agric[regio] = MZ_alloc_agric2[globals()[regio + "_district"]].sum(axis=1)
 
         ####
         # hier kan de Mozart selectie geplaatst worden op LSW niveau.
@@ -392,17 +366,11 @@ for sc in scenarios:
         ]
 
         DM_tekort_doorspoel_jaar.index = pd.to_datetime(DM_tekort_doorspoel_jaar.index)
-        DM_tekort_onttrekking_DIW_jaar.index = pd.to_datetime(
-            DM_tekort_onttrekking_DIW_jaar.index
-        )
-        DM_tekort_peilbeheer_jaar.index = pd.to_datetime(
-            DM_tekort_peilbeheer_jaar.index
-        )
+        DM_tekort_onttrekking_DIW_jaar.index = pd.to_datetime(DM_tekort_onttrekking_DIW_jaar.index)
+        DM_tekort_peilbeheer_jaar.index = pd.to_datetime(DM_tekort_peilbeheer_jaar.index)
 
         DM_vraag_doorspoel_jaar.index = pd.to_datetime(DM_vraag_doorspoel_jaar.index)
-        DM_vraag_onttrekking_DIW_jaar.index = pd.to_datetime(
-            DM_vraag_onttrekking_DIW_jaar.index
-        )
+        DM_vraag_onttrekking_DIW_jaar.index = pd.to_datetime(DM_vraag_onttrekking_DIW_jaar.index)
         DM_vraag_peilbeheer_jaar.index = pd.to_datetime(DM_vraag_peilbeheer_jaar.index)
 
         DM_netto_neerslag_jaar.index = pd.to_datetime(DM_netto_neerslag_jaar.index)
@@ -462,9 +430,7 @@ for sc in scenarios:
         totale_tekort_doorspoeling = (
             MZ_demand_flush * -1 - MZ_alloc_flush * -1 + DM_tekort_doorspoel_jaar
         )
-        totale_levering_doorspoeling = (
-            totale_vraag_doorspoeling - totale_tekort_doorspoeling
-        )
+        totale_levering_doorspoeling = totale_vraag_doorspoeling - totale_tekort_doorspoeling
 
         # doorspoeling - polders
         totale_vraag_doorspoeling_polders = MZ_demand_flush * -1
@@ -480,17 +446,14 @@ for sc in scenarios:
             totale_vraag_doorspoeling_boezem - totale_tekort_doorspoeling_boezem
         )
 
+
         # totale waarrdes
         totale_tekort = (
-            totale_tekort_doorspoeling
-            + totale_tekort_peilbeheer
-            + totale_tekort_beregening
+            totale_tekort_doorspoeling + totale_tekort_peilbeheer + totale_tekort_beregening
         )
 
         totale_vraag = (
-            totale_vraag_doorspoeling
-            + totale_vraag_peilbeheer
-            + totale_vraag_beregening
+            totale_vraag_doorspoeling + totale_vraag_peilbeheer + totale_vraag_beregening
         )
 
         totale_levering = (
@@ -508,34 +471,20 @@ for sc in scenarios:
         totale_tekort_doorspoeling_boezem.to_csv(
             f"{loc_output}/{sc}/waterbalans_per_jaar/Tekort_doorspoeling_boezem_{sc}_{jaar}_deelregios_hws.csv"
         )
-        totale_tekort_peilbeheer.to_csv(
-            f"{loc_output}/{sc}/waterbalans_per_jaar/Tekort_peilbeheer_{sc}_{jaar}_deelregios_hws.csv"
-        )
-        totale_tekort_beregening.to_csv(
-            f"{loc_output}/{sc}/waterbalans_per_jaar/Tekort_beregening_{sc}_{jaar}_deelregios_hws.csv"
-        )
-        totale_tekort.to_csv(
-            f"{loc_output}/{sc}/waterbalans_per_jaar/Tekort_totaal_{sc}_{jaar}_deelregios_hws.csv"
-        )
+        totale_tekort_peilbeheer.to_csv(f"{loc_output}/{sc}/waterbalans_per_jaar/Tekort_peilbeheer_{sc}_{jaar}_deelregios_hws.csv")
+        totale_tekort_beregening.to_csv(f"{loc_output}/{sc}/waterbalans_per_jaar/Tekort_beregening_{sc}_{jaar}_deelregios_hws.csv")
+        totale_tekort.to_csv(f"{loc_output}/{sc}/waterbalans_per_jaar/Tekort_totaal_{sc}_{jaar}_deelregios_hws.csv")
 
-        totale_vraag_doorspoeling.to_csv(
-            f"{loc_output}/{sc}/waterbalans_per_jaar/Vraag_doorspoeling_{sc}_{jaar}_deelregios_hws.csv"
-        )
+        totale_vraag_doorspoeling.to_csv(f"{loc_output}/{sc}/waterbalans_per_jaar/Vraag_doorspoeling_{sc}_{jaar}_deelregios_hws.csv")
         totale_vraag_doorspoeling_polders.to_csv(
             f"{loc_output}/{sc}/waterbalans_per_jaar/Vraag_doorspoeling_polders_{sc}_{jaar}_deelregios_hws.csv"
         )
         totale_vraag_doorspoeling_boezem.to_csv(
             f"{loc_output}/{sc}/waterbalans_per_jaar/Vraag_doorspoeling_boezem_{sc}_{jaar}_deelregios_hws.csv"
         )
-        totale_vraag_peilbeheer.to_csv(
-            f"{loc_output}/{sc}/waterbalans_per_jaar/Vraag_peilbeheer_{sc}_{jaar}_deelregios_hws.csv"
-        )
-        totale_vraag_beregening.to_csv(
-            f"{loc_output}/{sc}/waterbalans_per_jaar/Vraag_beregening_{sc}_{jaar}_deelregios_hws.csv"
-        )
-        totale_vraag.to_csv(
-            f"{loc_output}/{sc}/waterbalans_per_jaar/Vraag_totaal_{sc}_{jaar}_deelregios_hws.csv"
-        )
+        totale_vraag_peilbeheer.to_csv(f"{loc_output}/{sc}/waterbalans_per_jaar/Vraag_peilbeheer_{sc}_{jaar}_deelregios_hws.csv")
+        totale_vraag_beregening.to_csv(f"{loc_output}/{sc}/waterbalans_per_jaar/Vraag_beregening_{sc}_{jaar}_deelregios_hws.csv")
+        totale_vraag.to_csv(f"{loc_output}/{sc}/waterbalans_per_jaar/Vraag_totaal_{sc}_{jaar}_deelregios_hws.csv")
 
         totale_levering_doorspoeling.to_csv(
             f"{loc_output}/{sc}/waterbalans_per_jaar/Levering_doorspoeling_{sc}_{jaar}_deelregios_hws.csv"
@@ -552,9 +501,7 @@ for sc in scenarios:
         totale_levering_beregening.to_csv(
             f"{loc_output}/{sc}/waterbalans_per_jaar/Levering_beregening_{sc}_{jaar}_deelregios_hws.csv"
         )
-        totale_levering.to_csv(
-            f"{loc_output}/{sc}/waterbalans_per_jaar/Levering_totaal_{sc}_{jaar}_deelregios_hws.csv"
-        )
+        totale_levering.to_csv(f"{loc_output}/{sc}/waterbalans_per_jaar/Levering_totaal_{sc}_{jaar}_deelregios_hws.csv")
 
 # %%
 
