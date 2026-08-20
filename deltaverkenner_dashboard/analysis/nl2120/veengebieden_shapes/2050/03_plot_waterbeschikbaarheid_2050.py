@@ -208,6 +208,6 @@ for watervraag_type in watervraag_types:
             columns={"Watervraag gecorrigeerd": "Waterbeschikbaarheid (m3/s)"}
         )
 
-        outputpath = f"p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/nl2120/figuren/shapes_veengebieden/2050/csv's Dimmie/03_waterbeschikbaarheid_{run}_watervraag_{watervraag_type.lower()}_veengebieden_{selected_month}_1976.csv"
+        outputpath = f"p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/nl2120/figuren/shapes_veengebieden/2050/csv's Dimmie/03_waterbeschikbaarheid_2050_veengebieden_{selected_month}_1976.csv"
 
         deelregios_with_watervraag.to_csv(outputpath, index=False)
