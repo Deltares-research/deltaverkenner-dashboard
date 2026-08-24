@@ -10,7 +10,7 @@ Doel script: Watervraag, levering, tekort per scenario uit het algemene-dashboar
 
 
 Opmerkingen
-    - Een eerdere versie van dit script is te vinden op de volgende locatie: p:/11211541-005-dpzw-pragmaanpak/waterbalances/src/1-prepare/08_Watervraag_levering_tekort_gesplitst_hoofdregios.py
+    - Een eerdere versie van dit script is te vinden op de volgende locatie: p:/archivedprojects/11211541-005-dpzw-pragmaanpak/waterbalances/src/1-prepare/08_Watervraag_levering_tekort_gesplitst_hoofdregios.py
 """
 
 # %%
