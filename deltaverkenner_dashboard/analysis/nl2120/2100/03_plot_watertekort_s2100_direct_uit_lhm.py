@@ -7,11 +7,10 @@ import matplotlib.pyplot as plt
 import matplotlib.patheffects as path_effects
 import matplotlib as mpl
 import numpy as np
-import cmocean
 from highlight_text import ax_text
 from PIL import Image
 
-from deltaverkenner_dashboard.analysis.read_dashboard import read_watervraag
+from deltaverkenner_dashboard.analysis.read_dashboard import read_watertekort
 
 
 # Open an image from a computer
@@ -41,14 +40,13 @@ image_height = image_width / aspect_ratio  # Same as width since our logo is a s
 
 my_path_effect = define_path_effect(linewidth=6, foreground="white", alpha=0.4)
 
-run_nrs = {"BP18REF2017_slr0": "1", "BP18STOOM2050_slr0.5": "5"}
+run = "S2100"
 
-run1 = "REF2017"
-run2 = "S2100"
+path_to_datafile = Path(
+    f"p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/nl2120/runs_owd/4-final/output_{run}.csv"
+)
 
-runs = [run1, run2]
-
-watervraag_types = ["Totaal"]  # "Beregening"]#, "Peilbeheer", "Doorspoeling", "Totaal"]
+watervraag_types = ["Totaal"]
 
 selected_months = ["July"]  # , "August"]
 
@@ -62,44 +60,26 @@ cmap = matplotlib.colormaps.get_cmap("OrRd").copy()
 cmap.set_under("#add8e6")
 
 bounds = [0, 10, 20, 30, 40, 50]
-norm = mpl.colors.BoundaryNorm(bounds, cmap.N, extend="max")  # , clip=True)
+norm = mpl.colors.BoundaryNorm(bounds, cmap.N, extend="max")
 
 for watervraag_type in watervraag_types:
+
     for selected_month in selected_months:
+        print(f"reading and plotting {watervraag_type} for {run} in {selected_month}")
 
-        data_dict = {}
+        data = read_watertekort(
+            path_to_datafile,
+            watervraag_type=watervraag_type,
+            selected_months=selected_month,
+        )
 
-        for run in runs:
-            print(f"Reading data for {run}, {watervraag_type}, and {selected_month}")
-            path_to_datafile = Path(
-                f"p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/nl2120/runs_owd/4-final/output_{run}.csv"
-            )
+        deelregios_with_watervraag = deelregios.merge(data, on="Nummer")
 
-            data = read_watervraag(
-                path_to_datafile,
-                watervraag_type=watervraag_type,
-                selected_months=selected_month,
-            )
-
-            deelregios_with_watervraag = deelregios.merge(data, on="Nummer")
-
-            deelregios_with_watervraag["Nummer"] = pd.to_numeric(
-                deelregios_with_watervraag["Nummer"]
-            )
-            deelregios_with_watervraag = deelregios_with_watervraag.sort_values(
-                by=["Nummer"]
-            )
-
-            if run in ["REF2017"]:
-                deelregios_with_watervraag["Watervraag gecorrigeerd"] = (
-                    (1-0.27) * deelregios_with_watervraag["Watervraag"]
-                )
-
-            data_dict[run] = deelregios_with_watervraag
-
-        diff = data_dict[run2]
-        diff[f"Difference with {run1}"] = (
-            data_dict[run2]["Watervraag"] - data_dict[run1]["Watervraag gecorrigeerd"]
+        deelregios_with_watervraag["Nummer"] = pd.to_numeric(
+            deelregios_with_watervraag["Nummer"]
+        )
+        deelregios_with_watervraag = deelregios_with_watervraag.sort_values(
+            by=["Nummer"]
         )
 
         fig, ax = plt.subplots(figsize=(8.27, 11.69))
@@ -113,24 +93,18 @@ for watervraag_type in watervraag_types:
             left=False,
         )
 
-        # First line (centered)
-        ax.text(
-            0.7,
-            1.04,
-            f"Watertekort in {run2}",
-            transform=ax.transAxes,
-            ha="center",
-            va="bottom",
-            fontsize=14,
+        ax.set_title(
+            f"{run} - watertekort, {watervraag_type.lower()}", fontsize=14, loc="right"
         )
 
-        cs = diff.plot(
+        deelregios_with_watervraag.plot(
             ax=ax,
-            column=f"Difference with {run1}",
+            column="Watervraag",
             zorder=2,
             cmap=cmap,
             norm=norm,
             legend=False,
+            # legend_kwds={"shrink": 0.65, "label": r"m$^{3}$/s"},
         )
 
         sm = plt.cm.ScalarMappable(cmap=cmap, norm=norm)
@@ -139,12 +113,12 @@ for watervraag_type in watervraag_types:
         cbar = plt.colorbar(
             sm,
             ax=ax,
-            extend="both",
+            extend="max",
             shrink=0.65,
             label=r"m$^{3}$/s",
         )
 
-        diff.boundary.plot(ax=ax, lw=0.3, color="black")
+        deelregios_with_watervraag.boundary.plot(ax=ax, lw=0.3, color="black")
 
         ax.set_xlim([xmin, xmax])
         ax.set_ylim([ymin, ymax])
@@ -153,12 +127,12 @@ for watervraag_type in watervraag_types:
         ytext = 620_000
 
         for x, y, label, deelregio, deelregio_legenda, nummer in zip(
-            diff.centroid.x,
-            diff.centroid.y,
-            diff[f"Difference with {run1}"],
-            diff["Naam"],
-            diff["deelregio"],
-            diff["Nummer"],
+            deelregios_with_watervraag.centroid.x,
+            deelregios_with_watervraag.centroid.y,
+            deelregios_with_watervraag["Watervraag"],
+            deelregios_with_watervraag["Naam"],
+            deelregios_with_watervraag["deelregio"],
+            deelregios_with_watervraag["Nummer"],
         ):
 
             fontsize = 9
@@ -189,7 +163,6 @@ for watervraag_type in watervraag_types:
             ax_text(
                 x=x,
                 y=y,
-                # s=f"<{label:.0f}>",
                 s=f"<{nummer}>",
                 fontsize=fontsize,
                 ax=ax,
@@ -212,12 +185,14 @@ for watervraag_type in watervraag_types:
 
         # Display the image
         ax_image.imshow(image)
-        ax_image.axis("off")  # Remove axis of the image
+
+        # Remove axis of the image
+        ax_image.axis("off")
 
         ax.axis("off")
 
         figpath = Path(
-            f"p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/nl2120/figuren/2100/Figuren Dimmie/03_watertekort_{run2}_deelregios_{selected_month}_1976.png"
+            f"p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/nl2120/figuren/2100/Voor Dimmie 2026_08_28/Figuren Dimmie/03_{run}_watertekort_{watervraag_type.lower()}_deelregios_{selected_month}_1976.png"
         )
 
         plt.savefig(figpath, bbox_inches="tight", dpi=300)
@@ -225,13 +200,13 @@ for watervraag_type in watervraag_types:
         plt.close()
 
         deelregios_with_watervraag = deelregios_with_watervraag.drop(
-            columns=["geometry", "Watervraag"]
+            columns=["geometry"]
         )
 
         deelregios_with_watervraag = deelregios_with_watervraag.rename(
-            columns={"Difference with REF2017": "Watertekort (m3/s)"}
+            columns={"Watervraag": "Watertekort (m3/s)"}
         )
 
-        outputpath = f"p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/nl2120/figuren/2100/csv's Dimmie/03_watertekort_{run2}_deelregios_{selected_month}_1976.csv"
+        outputpath = f"p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/nl2120/figuren/2100/Voor Dimmie 2026_08_28/csv's Dimmie/03_{run}_watertekort_{watervraag_type.lower()}_deelregios_{selected_month}_1976.csv"
 
         deelregios_with_watervraag.to_csv(outputpath, index=False)

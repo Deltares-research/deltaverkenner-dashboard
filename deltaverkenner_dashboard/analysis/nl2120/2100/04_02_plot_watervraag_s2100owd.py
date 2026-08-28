@@ -46,7 +46,7 @@ path_to_datafile = Path(
     f"p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/nl2120/runs_owd/4-final/output_{run}.csv"
 )
 
-watervraag_types = ["Totaal"]  # ["Beregening", "Peilbeheer", "Doorspoeling", "Totaal"]
+watervraag_types = ["Beregening", "Peilbeheer", "Doorspoeling", "Totaal"]
 
 selected_months = ["July"]  # ["July"]#, "August"]
 
@@ -187,7 +187,7 @@ for watervraag_type in watervraag_types:
         ax.axis("off")
 
         figpath = Path(
-            f"p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/nl2120/figuren/2100/Figuren Dimmie/04_{run}owd_watervraag_{watervraag_type.lower()}_deelregios_{selected_month}_1976.png"
+            f"p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/nl2120/figuren/2100/Voor Dimmie 2026_08_28/Figuren Dimmie/04_{run}owd_watervraag_{watervraag_type.lower()}_deelregios_{selected_month}_1976.png"
         )
 
         plt.savefig(figpath, bbox_inches="tight", dpi=300)
@@ -202,6 +202,6 @@ for watervraag_type in watervraag_types:
             columns={"Watervraag": "Watervraag (m3/s)"}
         )
 
-        outputpath = f"p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/nl2120/figuren/2100/csv's Dimmie/04_{run}owd_watervraag_{watervraag_type.lower()}_deelregios_{selected_month}_1976.csv"
+        outputpath = f"p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/nl2120/figuren/2100/Voor Dimmie 2026_08_28/csv's Dimmie/04_{run}owd_watervraag_{watervraag_type.lower()}_deelregios_{selected_month}_1976.csv"
 
         deelregios_with_watervraag.to_csv(outputpath, index=False)

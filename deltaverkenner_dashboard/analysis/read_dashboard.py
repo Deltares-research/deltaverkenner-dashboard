@@ -66,7 +66,7 @@ def read_watervraag(
     if S2100_owd:
         if any(selected_data_averages.index.str.contains("p2")):
             factors = pd.read_csv(
-                r"p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/nl2120/figuren/shapes_veengebieden/2100/04_01_toename_watervraag_peilbeheer_S2050_S2050owd.csv",
+                r"p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/nl2120/figuren/2100/toename_watervraag_peilbeheer_S2050_S2050owd.csv",
                 index_col="Nummer",
             )[
                 "Factor difference in watervraag peilbeheer between S2050 and S2050owd"
@@ -138,7 +138,7 @@ def read_watertekort(
     if S2100_owd:
         if any(selected_data_averages.index.str.contains("p2")):
             factors = pd.read_csv(
-                r"p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/nl2120/figuren/shapes_veengebieden/2100/05_01_toename_watertekort_peilbeheer_S2050_S2050owd.csv",
+                r"p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/nl2120/figuren/2100/05_01_toename_watertekort_peilbeheer_S2050_S2050owd.csv",
                 index_col="Nummer",
             )["Difference in watertekort peilbeheer between S2050 and S2050owd"].values
 

@@ -222,7 +222,7 @@ for watervraag_type in watervraag_types:
         ax.axis("off")
 
         figpath = Path(
-            f"p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/nl2120/figuren/2050/Voor_Dimmie_2026_08_28/Figuren Dimmie/04_diff_{run2}-{run1}_watervraag_{watervraag_type.lower()}_deelregios_{selected_month}_1976.png"
+            f"p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/nl2120/figuren/2050/Voor Dimmie 2026_08_28/Figuren Dimmie/04_diff_{run2}-{run1}_watervraag_{watervraag_type.lower()}_deelregios_{selected_month}_1976.png"
         )
 
         plt.savefig(figpath, bbox_inches="tight", dpi=300)
@@ -231,6 +231,6 @@ for watervraag_type in watervraag_types:
 
         diff = diff.drop(columns=["Watervraag", "geometry"])
 
-        outputpath = f"p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/nl2120/figuren/2050/Voor_Dimmie_2026_08_28/csv's Dimmie/04_toename_watervraag_ref2017_s2050_{selected_month}_1976.csv"
+        outputpath = f"p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/nl2120/figuren/2050/Voor Dimmie 2026_08_28/csv's Dimmie/04_toename_watervraag_ref2017_s2050_{selected_month}_1976.csv"
 
         diff.to_csv(outputpath, index=False)

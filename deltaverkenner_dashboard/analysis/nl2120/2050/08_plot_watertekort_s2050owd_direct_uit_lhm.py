@@ -56,7 +56,11 @@ deelregios = gpd.read_file(path_to_deelregios)
 # bounds van Nederland
 xmin, ymin, xmax, ymax = (0.0, 300000.0, 281000.0, 625000.0)
 
-cmap = matplotlib.colormaps.get_cmap("RdYlBu_r")
+cmap = matplotlib.colormaps.get_cmap("OrRd").copy()
+cmap.set_under("#add8e6")
+
+bounds = [0, 10, 20, 30, 40, 50]
+norm = mpl.colors.BoundaryNorm(bounds, cmap.N, extend="max")
 
 for watervraag_type in watervraag_types:
 
@@ -77,13 +81,6 @@ for watervraag_type in watervraag_types:
         deelregios_with_watervraag = deelregios_with_watervraag.sort_values(
             by=["Nummer"]
         )
-
-        if watervraag_type in ["Beregening", "Doorspoeling", "Peilbeheer"]:
-            bounds = [0, 10, 20, 30, 40, 50]
-        elif watervraag_type in ["Totaal"]:
-            bounds = [0, 15, 30, 45, 60, 75]
-
-        norm = mpl.colors.BoundaryNorm(bounds, cmap.N, extend="max")
 
         fig, ax = plt.subplots(figsize=(8.27, 11.69))
 
@@ -106,8 +103,19 @@ for watervraag_type in watervraag_types:
             zorder=2,
             cmap=cmap,
             norm=norm,
-            legend=True,
-            legend_kwds={"shrink": 0.65, "label": r"m$^{3}$/s"},
+            legend=False,
+            # legend_kwds={"shrink": 0.65, "label": r"m$^{3}$/s"},
+        )
+
+        sm = plt.cm.ScalarMappable(cmap=cmap, norm=norm)
+        sm.set_array([])
+
+        cbar = plt.colorbar(
+            sm,
+            ax=ax,
+            extend="max",
+            shrink=0.65,
+            label=r"m$^{3}$/s",
         )
 
         deelregios_with_watervraag.boundary.plot(ax=ax, lw=0.3, color="black")
@@ -184,7 +192,7 @@ for watervraag_type in watervraag_types:
         ax.axis("off")
 
         figpath = Path(
-            f"p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/nl2120/figuren/2050/Voor_Dimmie_2026_08_28/Figuren Dimmie/08_{run}_watertekort_{watervraag_type.lower()}_deelregios_{selected_month}_1976.png"
+            f"p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/nl2120/figuren/2050/Voor Dimmie 2026_08_28/Figuren Dimmie/08_{run}_watertekort_{watervraag_type.lower()}_deelregios_{selected_month}_1976.png"
         )
 
         plt.savefig(figpath, bbox_inches="tight", dpi=300)
@@ -199,6 +207,6 @@ for watervraag_type in watervraag_types:
             columns={"Watervraag": "Watertekort (m3/s)"}
         )
 
-        outputpath = f"p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/nl2120/figuren/2050/Voor_Dimmie_2026_08_28/csv's Dimmie/08_{run}_watertekort_{watervraag_type.lower()}_deelregios_{selected_month}_1976.csv"
+        outputpath = f"p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/nl2120/figuren/2050/Voor Dimmie 2026_08_28/csv's Dimmie/08_{run}_watertekort_{watervraag_type.lower()}_deelregios_{selected_month}_1976.csv"
 
         deelregios_with_watervraag.to_csv(outputpath, index=False)
