@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 import matplotlib.patheffects as path_effects
 import matplotlib as mpl
 import numpy as np
+
 # from highlight_text import ax_text
 from PIL import Image
 
@@ -45,7 +46,9 @@ run2 = "S2050owd"
 
 runs = [run1, run2]
 
-watervraag_types = ["Peilbeheer"]  # "Beregening"]#, "Peilbeheer", "Doorspoeling", "Totaal"]
+watervraag_types = [
+    "Peilbeheer"
+]  # "Beregening"]#, "Peilbeheer", "Doorspoeling", "Totaal"]
 
 selected_months = ["July"]  # , "August"]
 
@@ -75,7 +78,7 @@ for watervraag_type in watervraag_types:
             print(f"Reading data for {run}, {watervraag_type}, and {selected_month}")
 
             path_to_datafile = Path(
-                f"p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/nl2120/runs_owd/4-final/output_{run}.csv"
+                f"p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/nl2120/runs_deelregios/4-final/output_{run}.csv"
             )
 
             data = read_watervraag(
@@ -100,9 +103,9 @@ for watervraag_type in watervraag_types:
         #     data_dict[run2]["Watervraag"] - data_dict[run1]["Watervraag"]
         # )
 
-        diff[f"Factor difference in watervraag peilbeheer between {run1} and {run2}"] = (
-            data_dict[run2]["Watervraag"] / data_dict[run1]["Watervraag"]
-        )
+        diff[
+            f"Factor difference in watervraag peilbeheer between {run1} and {run2}"
+        ] = (data_dict[run2]["Watervraag"] / data_dict[run1]["Watervraag"])
 
         diff = diff.replace(np.nan, 1.0)
 

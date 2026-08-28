@@ -43,7 +43,7 @@ my_path_effect = define_path_effect(linewidth=6, foreground="white", alpha=0.4)
 run = "S2100"
 
 path_to_datafile = Path(
-    f"p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/nl2120/runs_owd/4-final/output_{run}.csv"
+    f"p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/nl2120/runs_deelregios/4-final/output_{run}.csv"
 )
 
 watervraag_types = ["Totaal"]  # ["Beregening", "Peilbeheer", "Doorspoeling", "Totaal"]
@@ -99,9 +99,7 @@ for watervraag_type in watervraag_types:
             left=False,
         )
 
-        ax.set_title(
-            f"Watertekort in {run}, direct uit LHM", fontsize=14, loc="right"
-        )
+        ax.set_title(f"Watertekort in {run}, direct uit LHM", fontsize=14, loc="right")
 
         deelregios_with_watervraag.plot(
             ax=ax,

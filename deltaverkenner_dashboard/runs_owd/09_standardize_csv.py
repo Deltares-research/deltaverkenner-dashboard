@@ -11,31 +11,28 @@ def rename_col(col):
         return f"{parts[1]}_{parts[0]}_{parts[2]}"
     return col
 
+
 start_time = datetime.datetime.now()
 
-watertypes_english = {
-    "Vraag": "Demand",
-    "Levering": "Allocation",
-    "Tekort": "Shortage"
-}
+watertypes_english = {"Vraag": "Demand", "Levering": "Allocation", "Tekort": "Shortage"}
 
 priorities = {
     "verdamping": "p1",
     "peilbeheer": "p2",
-    "doorspoeling hws" : "p3",
+    "doorspoeling hws": "p3",
     "doorspoeling": "p4",
     "beregening": "p5",
 }
 
 # scenarios = ["S2050owd"]
-scenarios = ["S2100"] #] "S2050"# ] #] #, ]
+scenarios = ["S2100"]  # ] "S2050"# ] #] #, ]
 
 
 jaren = {
-    "S2050owd": range(1911, 2011+1),
-    "REF2017": range(1911, 2011+1),
-    "S2050": range(1911, 2011+1),
-    "S2100": range(1972, 2003+1)
+    "S2050owd": range(1911, 2011 + 1),
+    "REF2017": range(1911, 2011 + 1),
+    "S2050": range(1911, 2011 + 1),
+    "S2100": range(1972, 2003 + 1),
 }
 
 regions = {f"Region{i}": f"r{i}" for i in range(1, 22)}
@@ -45,7 +42,9 @@ exclude_names = ["totaal", "doorspoeling_boezem", "doorspoeling_polders"]
 for sc in scenarios:
     print(f"Working on {sc} scenario")
 
-    filedir = Path(f"p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/nl2120/runs_owd/3-output/{sc}/waterbalans_per_jaar/")
+    filedir = Path(
+        f"p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/nl2120/runs_deelregios/3-output/{sc}/waterbalans_per_jaar/"
+    )
 
     total_df = pd.DataFrame()
 
@@ -66,13 +65,15 @@ for sc in scenarios:
                 priority = file.stem.split("_")[1]
                 watertype = file.stem.split("_")[0]
 
-                data.name = file.stem.replace(
-                    watertype, watertypes_english[watertype]
-                ).replace(priority, priorities[priority]).replace(f"_{sc}_{jaar}_deelregios_hws", "")
+                data.name = (
+                    file.stem.replace(watertype, watertypes_english[watertype])
+                    .replace(priority, priorities[priority])
+                    .replace(f"_{sc}_{jaar}_deelregios_hws", "")
+                )
 
                 for region in regions:
                     series = data[region]
-                    series.name = data.name + '_' + regions[region]
+                    series.name = data.name + "_" + regions[region]
 
                     if df.empty:
                         df = series.to_frame()
@@ -86,7 +87,9 @@ for sc in scenarios:
 
     total_df.columns = [rename_col(c) for c in total_df.columns]
 
-    output_path = Path(f"p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/nl2120/runs_owd/4-final/output_{sc}.csv")
+    output_path = Path(
+        f"p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/nl2120/runs_deelregios/4-final/output_{sc}.csv"
+    )
     total_df.to_csv(output_path, index_label="time")
 
 end_time = datetime.datetime.now()

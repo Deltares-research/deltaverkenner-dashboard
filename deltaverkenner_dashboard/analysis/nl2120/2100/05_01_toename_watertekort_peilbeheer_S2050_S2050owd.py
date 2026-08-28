@@ -83,7 +83,7 @@ for watervraag_type in watervraag_types:
             print(f"Reading data for {run}, {watervraag_type}, and {selected_month}")
 
             path_to_datafile = Path(
-                f"p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/nl2120/runs_owd/4-final/output_{run}.csv"
+                f"p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/nl2120/runs_deelregios/4-final/output_{run}.csv"
             )
 
             data = read_watertekort(
