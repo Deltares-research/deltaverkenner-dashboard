@@ -38,11 +38,13 @@ variables = [
 
 ## PARAMETERS
 # scenarios = ["S2050owd"]
-scenarios = ["S2100"] # "REF2017"] #] #, ]
-jaren = [range(1972, 2003+1)] # [range(1911, 2011 + 1)]
+# scenarios = ["S2100"] # "REF2017"] #] #, ]
+scenarios = ["REF2017owd"]
+jaren = [range(1911, 2011 + 1)] # [range(1972, 2003+1)]
 
 ## UITVOER
-loc_output = "data/nl2120/runs_owd/2-interim/"
+# loc_output = "data/nl2120/runs_owd/2-interim/"
+loc_output = "data/runs_REF2017owd/2-interim/"
 
 ##-------------------------------------------
 ## 2. FUNCTIES
@@ -148,7 +150,7 @@ for variable in variables:
             #     rf"p:\11211541-005-dpzw-pragmaanpak\waterbalances\data\1-external\Modeloutput\{sc}\DM\output\{variable}_{j}.mpx"
             # )
             data = read(
-                rf"p:\11212687-deltaverkenner2026\Zoetwater\Dashboard\data\nl2120\runs_owd\1-input\{sc}\DM\output\{variable}_{j}.mpx"
+                rf"p:\11212687-deltaverkenner2026\Zoetwater\Dashboard\data\runs_REF2017owd\1-input\{sc}\DM\output\{variable}_{j}.mpx"
             )
             # Datum toevoegen
             data["Datum"] = [

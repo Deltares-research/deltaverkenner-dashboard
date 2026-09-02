@@ -20,10 +20,11 @@ import re
 from itertools import product
 from tqdm import tqdm
 
-# extract_folder = Path(r"p:\11210323-005-herijkingrisicos\data\1-external\Modeloutput")
-# extract_folder = Path(r"p:\11211541-005-dpzw-pragmaanpak\waterbalances\data\1-external\Modeloutput")
+# extract_folder = Path(
+#     r"p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/nl2120/runs_owd/1-input/"
+# )
 extract_folder = Path(
-    r"p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/nl2120/runs_owd/1-input/"
+    r"p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/runs_REF2017owd/1-input/"
 )
 
 files_to_extract = [
@@ -31,7 +32,8 @@ files_to_extract = [
 ]
 
 # scenarios = ['S2050owd']
-scenarios = ["S2085"] #"S2050"] #,REF2017 ]
+# scenarios = ["S2085"] #"S2050"] #,REF2017 ]
+scenarios = ["REF2017owd"]
 
 
 for sc in tqdm(scenarios):
@@ -48,7 +50,7 @@ for sc in tqdm(scenarios):
     #         rf"p:\archivedprojects\11202240-kpp-dp-zoetwater\NWM_BP2018_en_historie\2018_BP2018_productieomgeving\Modelzips_Productieomgeving_NWM_Z1\{sc}BP18"
     #     )
 
-    if sc in ["S2050owd"]:
+    if sc in ["REF2017owd","S2050owd"]:
         path_zips = Path(r'p:\archivedprojects\11205271-kpp-dp-zoetwater\NWM\2020_NWM_testomgeving\Gevoeligheidsanalyse_OWD')
     elif sc in ["REF2017", "S2050", "S2085"]:
         path_zips = Path(rf'p:\archivedprojects\11202240-kpp-dp-zoetwater\NWM_BP2018_en_historie\2018_BP2018_productieomgeving\Modelzips_Productieomgeving_NWM_Z1\{sc}BP18')

@@ -8,14 +8,15 @@ start_time = datetime.datetime.now()
 # os.chdir(r"p:/11211541-005-dpzw-pragmaanpak/waterbalances")
 os.chdir(r"p:/11212687-deltaverkenner2026/Zoetwater/Dashboard")
 
-loc_input = "data/nl2120/runs_owd/3-output/"
-loc_output = "data/nl2120/runs_owd/4-final-pragmaanpak-dashboards/"
+loc_input = "data/runs_REF2017owd/3-output/"
+loc_output = "data/runs_REF2017owd/4-final-pragmaanpak-dashboards/"
 
-scenarios = ["S2050owd"]
+scenarios = ["REF2017owd"]
 # scenarios = ['REF2017', 'S2050', 'S2100', 'REF2017VP', 'S2050VP']
 
 years = {
     "S2050owd": range(1911, 2011 + 1),
+    "REF2017owd": range(1911, 2011 + 1),
     "REF2017": range(1911, 2011+1),
     "S2050": range(1911, 2011+1),
     "S2100": range(1972, 2003+1),

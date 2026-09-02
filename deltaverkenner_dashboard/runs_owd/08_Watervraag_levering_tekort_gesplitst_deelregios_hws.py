@@ -38,17 +38,18 @@ start_time = datetime.datetime.now()
 # os.chdir(r"p:\11211541-005-dpzw-pragmaanpak\waterbalances")
 os.chdir(r"p:/11212687-deltaverkenner2026/Zoetwater/Dashboard")
 
-loc_input = "data/nl2120/runs_owd/2-interim"
-# loc_input = r"p:/11211541-005-dpzw-pragmaanpak/waterbalances/data/2-interim/Modeloutput/"
+# loc_input = "data/nl2120/runs_owd/2-interim"
+loc_input = "data/runs_REF2017owd/2-interim/"
 
 
 ## PARAMETERS
 # scenarios = ["S2050owd"]
-scenarios = ["S2100"]  # "S2050"] # "REF2017"] #] #, ]
+scenarios = ["REF2017owd"]  # "S2050"] # "REF2017"] #] #, ]
 
 
 jaren = {
     "S2050owd": range(1911, 2011 + 1),
+    "REF2017owd": range(1911, 2011 + 1),
     "REF2017": range(1911, 2011 + 1),
     "S2050": range(1911, 2011 + 1),
     "S2100": range(1972, 2003 + 1),
@@ -56,7 +57,7 @@ jaren = {
 
 ## UITVOER
 # loc_output = Path(r"p:/11211541-005-dpzw-pragmaanpak/waterbalances/data/3-input")
-loc_output = "data/nl2120/runs_owd/3-output"
+loc_output = "data/runs_REF2017owd/3-output"
 
 ##-------------------------------------------
 ## 2. FUNCTIES
