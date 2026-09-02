@@ -40,7 +40,7 @@ image_height = image_width / aspect_ratio  # Same as width since our logo is a s
 
 my_path_effect = define_path_effect(linewidth=6, foreground="white", alpha=0.4)
 
-run = "S2100"
+run = "REF2017"
 
 path_to_datafile = Path(
     f"p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/nl2120/runs_deelregios/4-final/output_{run}.csv"
@@ -48,7 +48,7 @@ path_to_datafile = Path(
 
 watervraag_types = ["Beregening", "Peilbeheer", "Doorspoeling", "Totaal"]
 
-selected_months = ["July"]  # ["July"]#, "August"]
+selected_months = ["July"]  # , "August"]
 
 path_to_deelregios = r"n:/Projects/11209000/11209259/F. Other information/00 Scripts en GISbestanden/Gisbestanden/ZW_regios/ZW_deelregios.shp"
 deelregios = gpd.read_file(path_to_deelregios)
@@ -67,7 +67,6 @@ for watervraag_type in watervraag_types:
             path_to_datafile,
             watervraag_type=watervraag_type,
             selected_months=selected_month,
-            S2100_owd=True,
         )
 
         deelregios_with_watervraag = deelregios.merge(data, on="Nummer")
@@ -98,9 +97,7 @@ for watervraag_type in watervraag_types:
         )
 
         ax.set_title(
-            f"{run}owd - watervraag, {watervraag_type.lower()}",
-            fontsize=14,
-            loc="right",
+            f"{run} - watervraag, {watervraag_type.lower()}", fontsize=14, loc="right"
         )
 
         deelregios_with_watervraag.plot(
@@ -187,7 +184,7 @@ for watervraag_type in watervraag_types:
         ax.axis("off")
 
         figpath = Path(
-            f"p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/nl2120/figuren/2100/Voor Dimmie 2026_08_28/Figuren Dimmie/04_{run}owd_watervraag_{watervraag_type.lower()}_deelregios_{selected_month}_1976.png"
+            f"p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/nl2120/figuren/2050/Voor Dimmie 2026_08_28/Figuren Dimmie/01_{run}_watervraag_{watervraag_type.lower()}_deelregios_{selected_month}_1976.png"
         )
 
         plt.savefig(figpath, bbox_inches="tight", dpi=300)
@@ -202,6 +199,6 @@ for watervraag_type in watervraag_types:
             columns={"Watervraag": "Watervraag (m3/s)"}
         )
 
-        outputpath = f"p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/nl2120/figuren/2100/Voor Dimmie 2026_08_28/csv's Dimmie/04_{run}owd_watervraag_{watervraag_type.lower()}_deelregios_{selected_month}_1976.csv"
+        outputpath = f"p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/nl2120/figuren/2050/Voor Dimmie 2026_08_28/csv's Dimmie/01_{run}_watervraag_{watervraag_type.lower()}_deelregios_{selected_month}_1976.csv"
 
         deelregios_with_watervraag.to_csv(outputpath, index=False)

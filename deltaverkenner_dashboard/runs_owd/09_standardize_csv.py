@@ -11,18 +11,15 @@ def rename_col(col):
         return f"{parts[1]}_{parts[0]}_{parts[2]}"
     return col
 
+
 start_time = datetime.datetime.now()
 
-watertypes_english = {
-    "Vraag": "Demand",
-    "Levering": "Allocation",
-    "Tekort": "Shortage"
-}
+watertypes_english = {"Vraag": "Demand", "Levering": "Allocation", "Tekort": "Shortage"}
 
 priorities = {
     "verdamping": "p1",
     "peilbeheer": "p2",
-    "doorspoeling hws" : "p3",
+    "doorspoeling hws": "p3",
     "doorspoeling": "p4",
     "beregening": "p5",
 }
@@ -68,13 +65,15 @@ for sc in scenarios:
                 priority = file.stem.split("_")[1]
                 watertype = file.stem.split("_")[0]
 
-                data.name = file.stem.replace(
-                    watertype, watertypes_english[watertype]
-                ).replace(priority, priorities[priority]).replace(f"_{sc}_{jaar}_deelregios_hws", "")
+                data.name = (
+                    file.stem.replace(watertype, watertypes_english[watertype])
+                    .replace(priority, priorities[priority])
+                    .replace(f"_{sc}_{jaar}_deelregios_hws", "")
+                )
 
                 for region in regions:
                     series = data[region]
-                    series.name = data.name + '_' + regions[region]
+                    series.name = data.name + "_" + regions[region]
 
                     if df.empty:
                         df = series.to_frame()

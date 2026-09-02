@@ -24,12 +24,19 @@ years = {
     "S2050VP": range(1911, 2011+1),
 }
 
-waterbalances = ['Tekort', 'Vraag', 'Levering']
-waterbalance_types = ['doorspoeling', 'doorspoeling_polders', 'doorspoeling_boezem', 'peilbeheer', 'beregening', 'totaal']
+waterbalances = ["Tekort", "Vraag", "Levering"]
+waterbalance_types = [
+    "doorspoeling",
+    "doorspoeling_polders",
+    "doorspoeling_boezem",
+    "peilbeheer",
+    "beregening",
+    "totaal",
+]
 
-regiotype =  'deelregios' # 'hoofdregios'
+regiotype = "deelregios"  # 'hoofdregios'
 
-nr_of_regions = 21 # 6 (is the number for the amount of regios)
+nr_of_regions = 21  # 6 (is the number for the amount of regios)
 
 for sc in scenarios:
 
@@ -44,27 +51,36 @@ for sc in scenarios:
 
     for waterbalance in waterbalances:
         for waterbalance_type in waterbalance_types:
-            
+
             dashboard_wb_type = None
 
             for year in year_range:
 
-                data = pd.read_csv(rf"{loc_run}/Waterbalans_per_jaar/{waterbalance}_{waterbalance_type}_{sc}_{year}_{regiotype}_hws.csv", index_col=0)
+                data = pd.read_csv(
+                    rf"{loc_run}/Waterbalans_per_jaar/{waterbalance}_{waterbalance_type}_{sc}_{year}_{regiotype}_hws.csv",
+                    index_col=0,
+                )
 
-                for nr in range(1,nr_of_regions+1):
-                    data = data.rename(columns={f"Region{nr}":f"{waterbalance}_{waterbalance_type}_{nr}"})
+                for nr in range(1, nr_of_regions + 1):
+                    data = data.rename(
+                        columns={
+                            f"Region{nr}": f"{waterbalance}_{waterbalance_type}_{nr}"
+                        }
+                    )
 
                 if dashboard_wb_type is None:
                     dashboard_wb_type = data
                 else:
                     dashboard_wb_type = pd.concat([dashboard_wb_type, data])
 
-            dashboard_wb_type[f'{waterbalance}_{waterbalance_type}_total'] = dashboard_wb_type.sum(axis=1)
+            dashboard_wb_type[f"{waterbalance}_{waterbalance_type}_total"] = (
+                dashboard_wb_type.sum(axis=1)
+            )
 
             if dashboard is None:
                 dashboard = dashboard_wb_type
             else:
-                dashboard = pd.concat([dashboard, dashboard_wb_type], axis='columns')
+                dashboard = pd.concat([dashboard, dashboard_wb_type], axis="columns")
 
     dashboard.index = pd.to_datetime(dashboard.index, format="mixed")
 

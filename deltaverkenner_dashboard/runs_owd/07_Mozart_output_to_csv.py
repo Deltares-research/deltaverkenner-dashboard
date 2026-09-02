@@ -17,7 +17,6 @@ import os
 import pandas as pd
 from mozart import read_mzbalance
 
-
 # %%
 ##-------------------------------------------
 ## 1. INVOER, PARAMETERS en UITVOER

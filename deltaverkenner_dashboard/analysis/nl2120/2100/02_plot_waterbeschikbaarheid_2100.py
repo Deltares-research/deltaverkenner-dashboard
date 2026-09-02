@@ -43,7 +43,7 @@ my_path_effect = define_path_effect(linewidth=6, foreground="white", alpha=0.4)
 run = "REF2017"
 
 path_to_datafile = Path(
-    f"p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/nl2120/runs_owd/4-final/output_{run}.csv"
+    f"p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/nl2120/runs_deelregios/4-final/output_{run}.csv"
 )
 
 watervraag_types = ["Totaal"]  # "Beregening"]#, "Peilbeheer", "Doorspoeling", "Totaal"]
@@ -53,7 +53,11 @@ selected_months = ["July"]  # , "August"]
 # bounds van Nederland
 xmin, ymin, xmax, ymax = (0.0, 300000.0, 281000.0, 625000.0)
 
-cmap = matplotlib.colormaps.get_cmap("RdYlBu_r")
+# cmap = matplotlib.colormaps.get_cmap("RdYlBu")
+cmap = matplotlib.colormaps.get_cmap("Blues")
+
+bounds = [0, 10, 20, 30, 40, 50]
+norm = mpl.colors.BoundaryNorm(bounds, cmap.N, extend="max")
 
 for watervraag_type in watervraag_types:
 
@@ -83,13 +87,6 @@ for watervraag_type in watervraag_types:
         ) * deelregios_with_watervraag[
             "Watervraag"
         ]  # 19% decrease in inflow from Rijn
-
-        if watervraag_type in ["Beregening", "Doorspoeling", "Peilbeheer"]:
-            bounds = [0, 10, 20, 30, 40, 50]
-        elif watervraag_type in ["Totaal"]:
-            bounds = [0, 15, 30, 45, 60, 75]
-
-        norm = mpl.colors.BoundaryNorm(bounds, cmap.N, extend="max")
 
         fig, ax = plt.subplots(figsize=(8.27, 11.69))
 
@@ -186,7 +183,7 @@ for watervraag_type in watervraag_types:
         ax.axis("off")
 
         figpath = Path(
-            f"p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/nl2120/figuren/2100/Figuren Dimmie/02_waterbeschikbaarheid_2100_deelregios_{selected_month}_1976.png"
+            f"p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/nl2120/figuren/2100/Voor Dimmie 2026_08_28/Figuren Dimmie/02_waterbeschikbaarheid_2100_deelregios_{selected_month}_1976.png"
         )
 
         plt.savefig(figpath, bbox_inches="tight", dpi=300)
@@ -201,6 +198,6 @@ for watervraag_type in watervraag_types:
             columns={"Watervraag gecorrigeerd": "Waterbeschikbaarheid (m3/s)"}
         )
 
-        outputpath = f"p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/nl2120/figuren/2100/csv's Dimmie/02_waterbeschikbaarheid_2100_deelregios_{selected_month}_1976.csv"
+        outputpath = f"p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/nl2120/figuren/2100/Voor Dimmie 2026_08_28/csv's Dimmie/02_waterbeschikbaarheid_2100_deelregios_{selected_month}_1976.csv"
 
         deelregios_with_watervraag.to_csv(outputpath, index=False)

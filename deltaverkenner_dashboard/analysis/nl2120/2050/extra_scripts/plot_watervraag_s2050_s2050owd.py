@@ -77,7 +77,7 @@ for watervraag_type in watervraag_types:
                 )
             elif run in ["S2050", "S2050owd"]:
                 path_to_datafile = Path(
-                    f"p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/nl2120/runs_owd/4-final/output_{run}.csv"
+                    f"p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/nl2120/runs_deelregios/4-final/output_{run}.csv"
                 )
 
             data = read_watervraag(

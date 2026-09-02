@@ -11,7 +11,10 @@ import numpy as np
 # from highlight_text import ax_text
 from PIL import Image
 
-from deltaverkenner_dashboard.analysis.read_dashboard import read_watervraag
+from deltaverkenner_dashboard.analysis.read_dashboard import (
+    read_watervraag,
+    read_watertekort,
+)
 
 
 # Open an image from a computer
@@ -55,6 +58,8 @@ selected_months = ["July"]  # , "August"]
 path_to_deelregios = r"n:/Projects/11209000/11209259/F. Other information/00 Scripts en GISbestanden/Gisbestanden/ZW_regios/ZW_deelregios.shp"
 deelregios = gpd.read_file(path_to_deelregios)
 
+#######################################
+
 # bounds van Nederland
 xmin, ymin, xmax, ymax = (0.0, 300000.0, 281000.0, 625000.0)
 
@@ -81,7 +86,7 @@ for watervraag_type in watervraag_types:
                 f"p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/nl2120/runs_deelregios/4-final/output_{run}.csv"
             )
 
-            data = read_watervraag(
+            data = read_watertekort(
                 path_to_datafile,
                 watervraag_type=watervraag_type,
                 selected_months=selected_month,
@@ -103,15 +108,15 @@ for watervraag_type in watervraag_types:
         #     data_dict[run2]["Watervraag"] - data_dict[run1]["Watervraag"]
         # )
 
-        diff[
-            f"Factor difference in watervraag peilbeheer between {run1} and {run2}"
-        ] = (data_dict[run2]["Watervraag"] / data_dict[run1]["Watervraag"])
+        diff[f"Difference in watertekort peilbeheer between {run1} and {run2}"] = (
+            data_dict[run2]["Watervraag"] - data_dict[run1]["Watervraag"]
+        )
 
         diff = diff.replace(np.nan, 1.0)
 
         diff = diff.drop(columns=["Watervraag", "geometry"])
 
-        outputpath = r"p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/nl2120/figuren/2100/toename_watervraag_peilbeheer_S2050_S2050owd.csv"
+        outputpath = r"p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/nl2120/figuren/2100/05_01_toename_watertekort_peilbeheer_S2050_S2050owd.csv"
 
         diff.to_csv(outputpath, index=False)
         # fig, ax = plt.subplots(figsize=(8.27, 11.69))
