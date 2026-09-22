@@ -31,11 +31,12 @@ variables = ["lswwaterbalans"]
 
 ## PARAMETERS
 # scenarios = ["S2050owd"]
-scenarios = ["S2100"]  # "S2050"] #] #, ]
-jaren = [range(1972, 2003 + 1)]  # [range(1911, 2011 + 1)] # ,range(1911, 2011 + 1)]
+scenarios = ["REF2017owd"] #"S2050"] #] #, ]
+jaren = [range(1911, 2011 + 1)] # [range(1972, 2003+1)] # ,range(1911, 2011 + 1)]
 
 ## UITVOER
-loc_output = "data/nl2120/runs_deelregios/2-interim/"
+# loc_output = "data/nl2120/runs_owd/2-interim/"
+loc_output = "data/runs_REF2017owd/2-interim/"
 
 # %%
 ##-------------------------------------------
@@ -52,7 +53,7 @@ for variable in variables:
         for j in jaar_range:
             print(j)
             data = read_mzbalance(
-                f"data/nl2120/runs_deelregios/1-input/{sc}/Mozart/{variable}_{j}.out"
+                f"data/runs_REF2017owd/1-input/{sc}/Mozart/{variable}_{j}.out"
             )
 
             if j == jaar_range[0]:
