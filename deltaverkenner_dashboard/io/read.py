@@ -12,7 +12,27 @@ def read_excel_sheet(path: Path, sheet_name: str):
     return data
 
 
-def replace_region(col):
+def replace_region(col: str) -> str:
+    """Replace a trailing region code with its descriptive name.
+
+    Searches for a region code of the form ``r<number>`` at the end of
+    the provided string. If found, the region code is replaced using the
+    ``regiokoppeling`` lookup dictionary. If the code is not present in
+    the dictionary, the original code is retained. Strings without a
+    trailing region code are returned unchanged.
+
+    Parameters
+    ----------
+    col : str
+        Input string or column name containing an optional trailing
+        region code (e.g. ``"waterlevel_r12"``).
+
+    Returns
+    -------
+    str
+        String with the region code replaced by its descriptive name,
+        if available.
+    """
     match = re.search(r"(r\d+)$", col)
     if match:
         r = match.group(1)
