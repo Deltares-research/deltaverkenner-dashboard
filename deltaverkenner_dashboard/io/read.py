@@ -105,7 +105,7 @@ if __name__ == "__main__":
 
     writer = pd.ExcelWriter(
         Path(
-            "p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/2-output/dashboard_2026_data_runs_from_python.xlsx"
+            "p:/11212687-deltaverkenner2026/Zoetwater/Dashboard/data/2-output/dashboard_2026_data_runs_from_python_2026-10-05.xlsx"
         )
     )
 
